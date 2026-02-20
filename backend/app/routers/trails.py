@@ -85,15 +85,16 @@ async def get_trails_in_bounds(
     east: float = Query(...),
     db: AsyncSession = Depends(get_db),
 ):
-    """Spatial search: fetch trails within map bounds using PostGIS."""
+    """Spatial search: fetch trails within map bounds using lat/lng filtering."""
     result = await db.execute(
         text("""
             SELECT * FROM trails
-            WHERE geom IS NOT NULL
-            AND ST_Intersects(
-                geom,
-                ST_MakeEnvelope(:min_lng, :min_lat, :max_lng, :max_lat, 4326)::geography
-            )
+            WHERE trailhead_lat IS NOT NULL
+            AND trailhead_lng IS NOT NULL
+            AND trailhead_lat >= :min_lat
+            AND trailhead_lat <= :max_lat
+            AND trailhead_lng >= :min_lng
+            AND trailhead_lng <= :max_lng
             ORDER BY difficulty_score_0_10 DESC NULLS LAST
         """),
         {"min_lat": south, "min_lng": west, "max_lat": north, "max_lng": east},
