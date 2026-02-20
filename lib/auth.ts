@@ -1,28 +1,5 @@
 import type { UserProfile } from '../types';
-
-const API_URL = import.meta.env.VITE_API_URL;
-
-// ─── Helper ──────────────────────────────────────────────────
-function authHeaders(): HeadersInit {
-    const token = localStorage.getItem('access_token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
-async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-    const res = await fetch(`${API_URL}${path}`, {
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...authHeaders(),
-            ...options.headers,
-        },
-    });
-    if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || `API error ${res.status}`);
-    }
-    return res.json();
-}
+import { API_URL, apiFetch } from './apiClient';
 
 // ─── Auth Functions ─────────────────────────────────────────
 interface AuthResponse {

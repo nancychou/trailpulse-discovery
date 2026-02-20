@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Literal
 
 
 class HazardOut(BaseModel):
@@ -54,7 +55,19 @@ class TrailOut(BaseModel):
     reviews: list[ReviewOut] = []
 
 
+HAZARD_TYPES = Literal[
+    "downed_tree",
+    "trail_damage",
+    "wildlife",
+    "flooding",
+    "snow_ice",
+    "bridge_out",
+    "fire_closure",
+    "other",
+]
+
+
 class HazardCreate(BaseModel):
-    trail_id: str
-    type: str
-    message: str
+    trail_id: str = Field(..., min_length=1, max_length=100)
+    type: HAZARD_TYPES
+    message: str = Field(..., min_length=5, max_length=500, strip_whitespace=True)

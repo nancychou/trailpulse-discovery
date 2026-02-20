@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_ROLE_KEY: str
     # No JWT secret needed — Supabase uses ES256 (ECC P-256), verified via JWKS public key
     FRONTEND_URL: str = "http://localhost:3000"
+    # Gemini API key — server-side only, never exposed to the browser
+    GEMINI_API_KEY: str = ""
 
 
 settings = Settings()

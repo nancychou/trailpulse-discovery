@@ -6,6 +6,64 @@ import { INITIAL_TRAILS, INITIAL_RACES } from '../constants';
 
 const WS_URL = import.meta.env.VITE_API_URL?.replace(/^http/, 'ws') + '/ws';
 
+// ─── WebSocket with auto-reconnect ───────────────────────────
+const WS_MAX_RETRIES = 8;
+const WS_BASE_DELAY_MS = 1000; // 1s → 2s → 4s … up to ~128s
+
+/**
+ * Returns a cleanup function that permanently stops reconnection.
+ * Calls `onMessage` whenever a JSON message arrives matching the expected shape.
+ */
+function connectWebSocket(
+    onMessage: (msg: { type: string; data?: unknown }) => void,
+): () => void {
+    let ws: WebSocket | null = null;
+    let attempt = 0;
+    let stopped = false;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function connect() {
+        if (stopped) return;
+
+        ws = new WebSocket(WS_URL);
+
+        ws.onopen = () => {
+            attempt = 0; // reset backoff on successful connection
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data as string);
+                onMessage(msg);
+            } catch { /* ignore malformed frames */ }
+        };
+
+        ws.onerror = () => {
+            // onerror is always followed by onclose — let onclose handle retry
+        };
+
+        ws.onclose = () => {
+            if (stopped) return;
+            if (attempt >= WS_MAX_RETRIES) {
+                console.warn('[WS] Max reconnect attempts reached. Giving up.');
+                return;
+            }
+            const delay = WS_BASE_DELAY_MS * Math.pow(2, attempt);
+            attempt++;
+            console.info(`[WS] Reconnecting in ${delay}ms (attempt ${attempt}/${WS_MAX_RETRIES})`);
+            retryTimer = setTimeout(connect, delay);
+        };
+    }
+
+    connect();
+
+    return () => {
+        stopped = true;
+        if (retryTimer) clearTimeout(retryTimer);
+        ws?.close();
+    };
+}
+
 /**
  * Hook to fetch trails from the API with automatic fallback to local constants.
  * Subscribes to WebSocket hazard events for real-time updates.
@@ -25,9 +83,10 @@ export function useTrails() {
             } else {
                 setTrails(INITIAL_TRAILS);
             }
-        } catch (err: any) {
-            console.warn('API fetch failed, using local data:', err.message);
-            setError(err.message);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            console.warn('API fetch failed, using local data:', message);
+            setError(message);
             setTrails(INITIAL_TRAILS);
         } finally {
             setLoading(false);
@@ -37,19 +96,13 @@ export function useTrails() {
     useEffect(() => {
         load();
 
-        // WebSocket subscription for hazard updates
-        const ws = new WebSocket(WS_URL);
-        ws.onmessage = (event) => {
-            try {
-                const msg = JSON.parse(event.data);
-                if (msg.type === 'hazard_created') {
-                    load(); // Refresh trails to include new hazard
-                }
-            } catch { /* ignore parse errors */ }
-        };
-        ws.onerror = () => console.warn('WebSocket connection error');
+        const cleanup = connectWebSocket((msg) => {
+            if (msg.type === 'hazard_created') {
+                load(); // Refresh trails to include the new hazard
+            }
+        });
 
-        return () => ws.close();
+        return cleanup;
     }, [load]);
 
     return { trails, loading, error, refetch: load };
@@ -79,9 +132,10 @@ export function useTrailsInBounds(bounds: MapBounds | null) {
             try {
                 const data = await fetchTrailsInBounds(bounds);
                 setTrails(data);
-            } catch (err: any) {
-                console.warn('Spatial query failed:', err.message);
-                setError(err.message);
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Unknown error';
+                console.warn('Spatial query failed:', message);
+                setError(message);
             } finally {
                 setLoading(false);
             }
@@ -109,8 +163,9 @@ export function useGroupRuns() {
             try {
                 const data = await fetchGroupRuns();
                 if (mounted) setGroupRuns(data);
-            } catch (err: any) {
-                console.warn('Failed to fetch group runs:', err.message);
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Unknown error';
+                console.warn('Failed to fetch group runs:', message);
             } finally {
                 if (mounted) setLoading(false);
             }
@@ -118,20 +173,15 @@ export function useGroupRuns() {
 
         load();
 
-        // WebSocket subscription for real-time group run updates
-        const ws = new WebSocket(WS_URL);
-        ws.onmessage = (event) => {
-            try {
-                const msg = JSON.parse(event.data);
-                if (msg.type === 'group_run_created' && mounted) {
-                    setGroupRuns(prev => [msg.data as GroupRun, ...prev]);
-                }
-            } catch { /* ignore parse errors */ }
-        };
+        const cleanup = connectWebSocket((msg) => {
+            if (msg.type === 'group_run_created' && mounted) {
+                setGroupRuns(prev => [msg.data as GroupRun, ...prev]);
+            }
+        });
 
         return () => {
             mounted = false;
-            ws.close();
+            cleanup();
         };
     }, []);
 

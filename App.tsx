@@ -1,6 +1,5 @@
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { GoogleGenAI } from "@google/genai";
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import RaceSidebar from './components/RaceSidebar';
@@ -117,23 +116,16 @@ const AppContent: React.FC = () => {
     }
   }, [user, savedRaceIds, refreshProfile]);
 
-  // Fetch real-time weather using Google Search grounding
+  // Fetch real-time weather via backend proxy (Gemini key stays server-side)
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        const response = await ai.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: "What is the current weather temperature and general trail condition summary for Seattle/North Bend, WA area? Return exactly one short sentence (e.g., 'Overcast / 54°F - Conditions damp but stable').",
-          config: {
-            tools: [{ googleSearch: {} }],
-          },
-        });
-        const text = response.text || 'Optimal / 65°F';
-        // Extract URL for required search grounding citation
-        const source = response.candidates?.[0]?.groundingMetadata?.groundingChunks?.[0]?.web?.uri || null;
-        setWeatherData({ text, source });
-      } catch (error) {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const res = await fetch(`${apiUrl}/api/weather`);
+        if (!res.ok) throw new Error(`Weather API error ${res.status}`);
+        const data: { text: string; source: string | null } = await res.json();
+        setWeatherData({ text: data.text || 'Optimal / 65°F', source: data.source });
+      } catch {
         setWeatherData({ text: 'Optimal / 65°F', source: null });
       }
     };

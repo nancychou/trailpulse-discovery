@@ -1,15 +1,19 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.dependencies import get_current_user
 from app.schemas.auth import SignUpRequest, SignInRequest, TokenResponse, UserInfo
 from app.services.auth_service import supabase_sign_up, supabase_sign_in, supabase_sign_out
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("/signup", response_model=TokenResponse)
-async def signup(req: SignUpRequest):
-    """Register a new user."""
+@limiter.limit("5/minute")
+async def signup(request: Request, req: SignUpRequest):
+    """Register a new user. Rate limited to 5 attempts per minute per IP."""
     try:
         result = await supabase_sign_up(req.email, req.password, req.display_name)
         return TokenResponse(
@@ -22,8 +26,9 @@ async def signup(req: SignUpRequest):
 
 
 @router.post("/signin", response_model=TokenResponse)
-async def signin(req: SignInRequest):
-    """Sign in an existing user."""
+@limiter.limit("10/minute")
+async def signin(request: Request, req: SignInRequest):
+    """Sign in an existing user. Rate limited to 10 attempts per minute per IP."""
     try:
         result = await supabase_sign_in(req.email, req.password)
         return TokenResponse(
