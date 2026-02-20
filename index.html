@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrailPulse - Discover Your Next Adventure</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00913F",
+                        "navy": "#172D3D",
+                        "background-light": "#f5f8f5",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+
+        /* Fluid Dual Range Slider Styles */
+        .range-slider-container {
+            position: relative;
+            width: 100%;
+            height: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .range-slider-container input[type="range"],
+        .range-thumb-input {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            background: transparent;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            margin: 0;
+            cursor: pointer;
+            outline: none;
+            border: none;
+        }
+
+        /* Ensure input focus doesn't show default outline */
+        .range-slider-container input[type="range"]:focus,
+        .range-thumb-input:focus {
+            outline: none;
+        }
+
+        /* Webkit Thumb */
+        .range-slider-container input[type="range"]::-webkit-slider-thumb,
+        .range-thumb-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #00913F;
+            cursor: pointer;
+            pointer-events: all;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+            position: relative;
+            z-index: 20;
+            margin-top: 0px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .range-slider-container input[type="range"]:active::-webkit-slider-thumb,
+        .range-thumb-input:active::-webkit-slider-thumb {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0, 145, 63, 0.3);
+        }
+
+        /* Mozilla Thumb */
+        .range-slider-container input[type="range"]::-moz-range-thumb,
+        .range-thumb-input::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #00913F;
+            cursor: pointer;
+            pointer-events: all;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+            position: relative;
+            z-index: 20;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .range-slider-container input[type="range"]:active::-moz-range-thumb,
+        .range-thumb-input:active::-moz-range-thumb {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0, 145, 63, 0.3);
+        }
+
+        /* Firefox specific fix for tracks */
+        .range-slider-container input[type="range"]::-moz-range-track {
+            background: transparent;
+            border: none;
+        }
+
+        /* Fix for native select arrow removal */
+        .custom-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: none !important;
+            padding-right: 1.5rem !important;
+        }
+
+        .custom-select::-ms-expand {
+            display: none;
+        }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0"
+  }
+}
+</script>
+    <link rel="stylesheet" href="/index.css">
+</head>
+
+<body class="bg-white text-slate-900 overflow-hidden">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
