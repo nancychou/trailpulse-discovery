@@ -1,3 +1,4 @@
+from __future__ import annotations
 import httpx
 from functools import lru_cache
 from fastapi import Depends, HTTPException, Header

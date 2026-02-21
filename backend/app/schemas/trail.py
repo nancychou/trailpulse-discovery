@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from __future__ import annotations
+from pydantic import BaseModel, Field, field_validator
 from typing import Literal
 
 
@@ -70,4 +71,9 @@ HAZARD_TYPES = Literal[
 class HazardCreate(BaseModel):
     trail_id: str = Field(..., min_length=1, max_length=100)
     type: HAZARD_TYPES
-    message: str = Field(..., min_length=5, max_length=500, strip_whitespace=True)
+    message: str = Field(..., min_length=5, max_length=500)
+
+    @field_validator("message")
+    @classmethod
+    def strip_message(cls, v: str) -> str:
+        return v.strip()

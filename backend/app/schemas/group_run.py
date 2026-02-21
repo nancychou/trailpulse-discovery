@@ -1,3 +1,4 @@
+from __future__ import annotations
 import re
 from pydantic import BaseModel, Field, field_validator
 from typing import Literal
@@ -29,10 +30,15 @@ class GroupRunOut(BaseModel):
 
 class GroupRunCreate(BaseModel):
     trail_id: str = Field(..., min_length=1, max_length=100)
-    name: str = Field(..., min_length=2, max_length=100, strip_whitespace=True)
+    name: str = Field(..., min_length=2, max_length=100)
     time: str = Field(..., description="ISO 8601 datetime string, e.g. '2026-03-15T07:00'")
     type: GROUP_RUN_TYPES
     color: ALLOWED_COLORS = "text-primary"
+
+    @field_validator("name")
+    @classmethod
+    def strip_name(cls, v: str) -> str:
+        return v.strip()
 
     @field_validator("time")
     @classmethod
