@@ -4,10 +4,12 @@ from sqlalchemy.future import select
 
 from app.database import get_db
 from app.dependencies import get_current_user
+from app.logging import get_logger
 from app.models.profile import Profile
 from app.schemas.profile import ProfileOut, ProfileUpdate
 
 router = APIRouter(prefix="/api/profiles", tags=["profiles"])
+logger = get_logger(__name__)
 
 
 def _map_profile(p: Profile) -> ProfileOut:
@@ -35,7 +37,9 @@ async def get_my_profile(
     )
     profile = result.scalar_one_or_none()
     if not profile:
+        logger.warning("Profile not found", extra={"user_id": user["user_id"]})
         raise HTTPException(status_code=404, detail="Profile not found")
+    logger.debug("Profile fetched", extra={"user_id": user["user_id"]})
     return _map_profile(profile)
 
 
@@ -51,6 +55,7 @@ async def update_my_profile(
     )
     profile = result.scalar_one_or_none()
     if not profile:
+        logger.warning("Profile not found on update", extra={"user_id": user["user_id"]})
         raise HTTPException(status_code=404, detail="Profile not found")
 
     update_data = updates.model_dump(exclude_unset=True)
@@ -59,6 +64,7 @@ async def update_my_profile(
 
     await db.commit()
     await db.refresh(profile)
+    logger.info("Profile updated", extra={"user_id": user["user_id"], "fields": list(update_data.keys())})
     return _map_profile(profile)
 
 
@@ -81,6 +87,7 @@ async def add_saved_race(
         profile.saved_race_ids = [*current, race_id]
         await db.commit()
         await db.refresh(profile)
+        logger.info("Race saved", extra={"user_id": user["user_id"], "race_id": race_id})
 
     return {"savedRaceIds": profile.saved_race_ids or []}
 
@@ -103,5 +110,6 @@ async def remove_saved_race(
     profile.saved_race_ids = [r for r in current if r != race_id]
     await db.commit()
     await db.refresh(profile)
+    logger.info("Race removed", extra={"user_id": user["user_id"], "race_id": race_id})
 
     return {"savedRaceIds": profile.saved_race_ids or []}

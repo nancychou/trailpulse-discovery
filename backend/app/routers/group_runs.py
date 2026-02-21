@@ -6,11 +6,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.database import get_db
+from app.logging import get_logger
 from app.models.group_run import GroupRun
 from app.schemas.group_run import GroupRunOut, GroupRunCreate
 from app.services.realtime import manager
 
 router = APIRouter(prefix="/api/group-runs", tags=["group_runs"])
+logger = get_logger(__name__)
 
 
 def _map_group_run(row: GroupRun) -> GroupRunOut:
@@ -33,6 +35,7 @@ async def get_group_runs(db: AsyncSession = Depends(get_db)):
         select(GroupRun).order_by(GroupRun.created_at.desc())
     )
     runs = result.scalars().all()
+    logger.debug("Fetched group runs", extra={"count": len(runs)})
     return [_map_group_run(r) for r in runs]
 
 
@@ -58,6 +61,16 @@ async def create_group_run(
     await db.refresh(run)
 
     out = _map_group_run(run)
+
+    logger.info(
+        "Group run created",
+        extra={
+            "run_id": run.id,
+            "trail_id": payload.trail_id,
+            "run_name": payload.name,
+            "run_type": payload.type,
+        },
+    )
 
     # Broadcast to WebSocket clients
     await manager.broadcast("group_run_created", out.model_dump())

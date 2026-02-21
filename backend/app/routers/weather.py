@@ -1,8 +1,10 @@
 import httpx
 from fastapi import APIRouter, HTTPException
 from app.config import settings
+from app.logging import get_logger
 
 router = APIRouter(prefix="/api/weather", tags=["weather"])
+logger = get_logger(__name__)
 
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
@@ -20,6 +22,7 @@ async def get_weather():
     Uses Google Search grounding for real-time weather data.
     """
     if not settings.GEMINI_API_KEY:
+        logger.warning("GEMINI_API_KEY not set, returning fallback weather")
         return {"text": "Optimal / 65°F", "source": None}
 
     payload = {
@@ -38,6 +41,7 @@ async def get_weather():
 
         candidates = data.get("candidates", [])
         if not candidates:
+            logger.warning("Gemini returned no candidates, using fallback")
             return {"text": "Optimal / 65°F", "source": None}
 
         candidate = candidates[0]
@@ -51,10 +55,16 @@ async def get_weather():
         )
         source = grounding_chunks[0].get("web", {}).get("uri") if grounding_chunks else None
 
+        logger.info("Weather fetched from Gemini", extra={"grounded": source is not None})
         return {"text": text, "source": source}
 
     except httpx.HTTPStatusError as e:
+        logger.warning(
+            "Gemini API HTTP error",
+            extra={"status_code": e.response.status_code},
+        )
         raise HTTPException(status_code=502, detail=f"Gemini API error: {e.response.status_code}")
     except Exception:
         # Graceful degradation — never crash the app over weather
+        logger.warning("Gemini call failed, returning fallback weather")
         return {"text": "Optimal / 65°F", "source": None}

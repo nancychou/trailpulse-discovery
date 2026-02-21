@@ -4,6 +4,9 @@ from functools import lru_cache
 from fastapi import Depends, HTTPException, Header
 from jose import jwt, JWTError, jwk
 from app.config import settings
+from app.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 @lru_cache(maxsize=1)
@@ -51,12 +54,14 @@ def _verify_token(token: str) -> dict:
 async def get_current_user(authorization: str = Header(...)) -> dict:
     """Extract and verify JWT from Authorization: Bearer <token> header."""
     if not authorization.startswith("Bearer "):
+        logger.warning("Invalid authorization header format")
         raise HTTPException(status_code=401, detail="Invalid authorization header")
     token = authorization.split(" ", 1)[1]
     try:
         payload = _verify_token(token)
         return {"user_id": payload["sub"], "email": payload.get("email")}
-    except Exception:
+    except Exception as e:
+        logger.warning("JWT verification failed", extra={"reason": str(e)})
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 

@@ -5,10 +5,12 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from app.database import get_db
+from app.logging import get_logger
 from app.models.trail import Trail, Hazard, Review
 from app.schemas.trail import TrailOut, HazardOut, ReviewOut
 
 router = APIRouter(prefix="/api/trails", tags=["trails"])
+logger = get_logger(__name__)
 
 
 def _map_trail(trail: Trail) -> TrailOut:
@@ -74,6 +76,7 @@ async def get_trails(db: AsyncSession = Depends(get_db)):
         .order_by(Trail.difficulty_score_0_10.desc().nulls_last())
     )
     trails = result.scalars().all()
+    logger.debug("Fetched all trails", extra={"count": len(trails)})
     return [_map_trail(t) for t in trails]
 
 
@@ -86,6 +89,10 @@ async def get_trails_in_bounds(
     db: AsyncSession = Depends(get_db),
 ):
     """Spatial search: fetch trails within map bounds using lat/lng filtering."""
+    logger.debug(
+        "Bounds query",
+        extra={"south": south, "west": west, "north": north, "east": east},
+    )
     result = await db.execute(
         text("""
             SELECT * FROM trails
@@ -100,6 +107,7 @@ async def get_trails_in_bounds(
         {"min_lat": south, "min_lng": west, "max_lat": north, "max_lng": east},
     )
     rows = result.mappings().all()
+    logger.debug("Bounds query returned", extra={"count": len(rows)})
 
     return [
         TrailOut(

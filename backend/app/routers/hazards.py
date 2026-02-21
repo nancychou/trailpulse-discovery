@@ -5,11 +5,13 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.logging import get_logger
 from app.models.trail import Hazard
 from app.schemas.trail import HazardCreate
 from app.services.realtime import manager
 
 router = APIRouter(prefix="/api/hazards", tags=["hazards"])
+logger = get_logger(__name__)
 
 
 @router.post("")
@@ -29,6 +31,15 @@ async def create_hazard(
     )
     db.add(hazard)
     await db.commit()
+
+    logger.info(
+        "Hazard report created",
+        extra={
+            "hazard_id": hazard.id,
+            "trail_id": payload.trail_id,
+            "hazard_type": payload.type,
+        },
+    )
 
     # Broadcast to WebSocket clients
     await manager.broadcast(
