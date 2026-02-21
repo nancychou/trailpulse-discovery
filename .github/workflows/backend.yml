@@ -1,0 +1,60 @@
+name: Backend CI / Deploy
+
+on:
+  push:
+    branches: [main]
+    paths: ['backend/**']
+  pull_request:
+    branches: [main]
+    paths: ['backend/**']
+
+jobs:
+  # ─── Job 1: Run tests ───────────────────────────────────────────
+  test:
+    name: Test (Python 3.12)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: backend/requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run tests
+        run: python -m pytest tests/ -v
+        env:
+          # Tests are fully mocked — these values are fake placeholders
+          # required by pydantic-settings at import time but never used
+          DATABASE_URL: 'postgresql+asyncpg://fake:fake@localhost/fake'
+          SUPABASE_URL: 'https://fake.supabase.co'
+          SUPABASE_SERVICE_ROLE_KEY: 'fake-service-role-key'
+          SUPABASE_JWT_SECRET: 'fake-jwt-secret-long-enough-for-validation'
+          FRONTEND_URL: 'http://localhost:3000'
+          GEMINI_API_KEY: ''
+
+  # ─── Job 2: Deploy to Fly.io (main branch only) ─────────────────
+  deploy:
+    name: Deploy to Fly.io
+    needs: test                                          # only runs after test passes
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy
+        run: flyctl deploy --remote-only
+        working-directory: backend
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}  # set in GitHub repo secrets
