@@ -45,9 +45,9 @@ async def create_group_run(
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new group run and broadcast via WebSocket."""
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(timezone.utc)
     run = GroupRun(
-        id=str(uuid.uuid4()),
+        id=uuid.uuid4(),
         trail_id=payload.trail_id,
         name=payload.name,
         time=payload.time,
