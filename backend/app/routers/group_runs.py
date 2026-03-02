@@ -17,14 +17,14 @@ logger = get_logger(__name__)
 
 def _map_group_run(row: GroupRun) -> GroupRunOut:
     return GroupRunOut(
-        id=row.id,
+        id=str(row.id),
         trailId=row.trail_id,
         name=row.name,
         time=row.time or "",
         type=row.type or "",
         color=row.color or "text-primary",
         avatarUrl=row.avatar_url or "",
-        createdAt=row.created_at,
+        createdAt=str(row.created_at),
     )
 
 
