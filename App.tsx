@@ -12,11 +12,12 @@ import RaceDetailDrawer from './components/RaceDetailDrawer';
 import CommunityView from './components/CommunityView';
 import ProfileModal from './components/ProfileModal';
 import AuthModal from './components/AuthModal';
+import ChatWidget from './components/ChatWidget';
 import { useAuth } from './lib/AuthContext';
-import { useTrails, useTrailsInBounds, useRaces } from './lib/hooks';
+import { useTrails, useTrailsInBounds, useTrailDetail, useRaces } from './lib/hooks';
 import { addSavedRace, removeSavedRace } from './lib/auth';
 import { INITIAL_RACES } from './constants';
-import { FilterState, RaceFilterState, SortOption, Race, Trail, MapBounds } from './types';
+import { FilterState, RaceFilterState, SortOption, Race, TrailListItem, MapBounds } from './types';
 
 const AppContent: React.FC = () => {
   const { user, profile, refreshProfile } = useAuth();
@@ -63,7 +64,10 @@ const AppContent: React.FC = () => {
   });
   const [sortBy, setSortBy] = useState<SortOption>('Rating');
   const [activeTrailId, setActiveTrailId] = useState<string | null>(null);
-  const [selectedTrailForDetail, setSelectedTrailForDetail] = useState<Trail | null>(null);
+  const [selectedTrailId, setSelectedTrailId] = useState<string | null>(null);
+
+  // On-demand detail fetch (hazards + reviews loaded only when drawer opens)
+  const { trail: selectedTrailDetail, loading: trailDetailLoading } = useTrailDetail(selectedTrailId);
 
   // Map spatial search state
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
@@ -292,7 +296,9 @@ const AppContent: React.FC = () => {
                     </div>
                   ) : (
                     filteredAndSortedTrails.map(trail => (
-                      <TrailCard key={trail.id} trail={trail} isActive={activeTrailId === trail.id} onMouseEnter={() => setActiveTrailId(trail.id)} onMouseLeave={() => setActiveTrailId(null)} onClick={() => setSelectedTrailForDetail(trail)} />
+                      <div key={trail.id} style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 200px' }}>
+                        <TrailCard trail={trail} isActive={activeTrailId === trail.id} onMouseEnter={() => setActiveTrailId(trail.id)} onMouseLeave={() => setActiveTrailId(null)} onClick={() => setSelectedTrailId(trail.id)} />
+                      </div>
                     ))
                   )}
                 </div>
@@ -305,7 +311,7 @@ const AppContent: React.FC = () => {
                     trails={mapDisplayTrails}
                     loading={mapTrailsLoading}
                     onBoundsChange={handleBoundsChange}
-                    onTrailClick={setSelectedTrailForDetail}
+                    onTrailClick={setSelectedTrailId}
                     activeTrailId={activeTrailId}
                   />
                 </div>
@@ -350,15 +356,22 @@ const AppContent: React.FC = () => {
             </div>
           )}
 
-          {activeTab === 'Community' && <CommunityView trails={allTrails} />}
+          {activeTab === 'Community' && <CommunityView trails={allTrails} onAuthClick={() => setIsAuthOpen(true)} />}
         </section>
 
         {selectedRace && <RaceDetailDrawer race={selectedRace} onClose={() => setSelectedRace(null)} />}
-        {selectedTrailForDetail && <TrailDetailDrawer trail={selectedTrailForDetail} onClose={() => setSelectedTrailForDetail(null)} />}
+        {selectedTrailId && (
+          <TrailDetailDrawer
+            trail={selectedTrailDetail}
+            loading={trailDetailLoading}
+            onClose={() => setSelectedTrailId(null)}
+          />
+        )}
       </main>
 
       <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <ChatWidget />
 
       {activeTab !== 'Community' && (
         <footer className="bg-navy text-white py-4 flex justify-between items-center px-10 border-t border-slate-800 shrink-0 z-30">

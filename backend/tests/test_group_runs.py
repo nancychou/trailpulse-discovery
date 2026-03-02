@@ -19,7 +19,7 @@ def make_fake_run(**kwargs) -> GroupRun:
     r.trail_id = kwargs.get("trail_id", "trail-001")
     r.name = kwargs.get("name", "Saturday Morning Crew")
     r.time = kwargs.get("time", "2026-06-15T07:00")
-    r.type = kwargs.get("type", "moderate")
+    r.type = kwargs.get("type", "steady_pace")
     r.color = kwargs.get("color", "text-primary")
     r.avatar_url = kwargs.get("avatar_url", "https://picsum.photos/seed/1/100/100")
     r.created_at = kwargs.get("created_at", "2026-01-01T00:00:00+00:00")
@@ -30,7 +30,7 @@ VALID_PAYLOAD = {
     "trail_id": "trail-001",
     "name": "Saturday Morning Crew",
     "time": "2026-06-15T07:00",
-    "type": "moderate",
+    "type": "steady_pace",
     "color": "text-blue-500",
 }
 
@@ -137,7 +137,7 @@ class TestCreateGroupRun:
     def test_invalid_run_type_rejected_422(self, client, mock_db):
         resp = client.post("/api/group-runs", json={
             **VALID_PAYLOAD,
-            "type": "ultra_chill",
+            "type": "ultra_chill",  # not in the enum
         })
         assert resp.status_code == 422
         mock_db.add.assert_not_called()

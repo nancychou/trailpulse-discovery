@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { fetchTrails, fetchTrailsInBounds, fetchGroupRuns } from './api';
+import { fetchTrailsList, fetchTrailsInBounds, fetchTrailById, fetchGroupRuns } from './api';
 import type { GroupRun } from './api';
-import type { Trail, MapBounds } from '../types';
+import type { Trail, TrailListItem, MapBounds } from '../types';
 import { INITIAL_TRAILS, INITIAL_RACES } from '../constants';
 
 const WS_URL = import.meta.env.VITE_API_URL?.replace(/^http/, 'ws') + '/ws';
@@ -65,11 +65,11 @@ function connectWebSocket(
 }
 
 /**
- * Hook to fetch trails from the API with automatic fallback to local constants.
+ * Hook to fetch the lightweight trail list from the API.
  * Subscribes to WebSocket hazard events for real-time updates.
  */
 export function useTrails() {
-    const [trails, setTrails] = useState<Trail[]>(INITIAL_TRAILS);
+    const [trails, setTrails] = useState<TrailListItem[]>(INITIAL_TRAILS);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -77,7 +77,7 @@ export function useTrails() {
         setLoading(true);
         setError(null);
         try {
-            const data = await fetchTrails();
+            const data = await fetchTrailsList();
             if (data.length > 0) {
                 setTrails(data);
             } else {
@@ -109,11 +109,50 @@ export function useTrails() {
 }
 
 /**
+ * Hook to fetch a single trail's full detail (hazards + reviews) on demand.
+ */
+export function useTrailDetail(trailId: string | null) {
+    const [trail, setTrail] = useState<Trail | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!trailId) {
+            setTrail(null);
+            return;
+        }
+
+        let cancelled = false;
+        setLoading(true);
+        setError(null);
+
+        fetchTrailById(trailId)
+            .then((data) => {
+                if (!cancelled) setTrail(data);
+            })
+            .catch((err: unknown) => {
+                if (!cancelled) {
+                    const message = err instanceof Error ? err.message : 'Unknown error';
+                    console.warn('Failed to fetch trail detail:', message);
+                    setError(message);
+                }
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
+            });
+
+        return () => { cancelled = true; };
+    }, [trailId]);
+
+    return { trail, loading, error };
+}
+
+/**
  * Hook to fetch trails within map bounds using spatial search.
  * Debounces requests by 300ms to avoid overwhelming the API during pan/zoom.
  */
 export function useTrailsInBounds(bounds: MapBounds | null) {
-    const [trails, setTrails] = useState<Trail[]>([]);
+    const [trails, setTrails] = useState<TrailListItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -156,20 +195,20 @@ export function useGroupRuns() {
     const [groupRuns, setGroupRuns] = useState<GroupRun[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const load = useCallback(async () => {
+        try {
+            const data = await fetchGroupRuns();
+            setGroupRuns(data);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            console.warn('Failed to fetch group runs:', message);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         let mounted = true;
-
-        const load = async () => {
-            try {
-                const data = await fetchGroupRuns();
-                if (mounted) setGroupRuns(data);
-            } catch (err: unknown) {
-                const message = err instanceof Error ? err.message : 'Unknown error';
-                console.warn('Failed to fetch group runs:', message);
-            } finally {
-                if (mounted) setLoading(false);
-            }
-        };
 
         load();
 
@@ -183,9 +222,9 @@ export function useGroupRuns() {
             mounted = false;
             cleanup();
         };
-    }, []);
+    }, [load]);
 
-    return { groupRuns, loading };
+    return { groupRuns, loading, refetch: load };
 }
 
 /**

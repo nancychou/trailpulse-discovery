@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:3000"
     # Gemini API key — server-side only, never exposed to the browser
     GEMINI_API_KEY: str = ""
+    # Anthropic API key for Trail Planning AI agent
+    ANTHROPIC_API_KEY: str = ""
 
 
 settings = Settings()

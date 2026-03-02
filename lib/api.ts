@@ -1,19 +1,31 @@
-import type { Trail, MapBounds } from '../types';
+import type { Trail, TrailListItem, MapBounds } from '../types';
 import { apiFetch } from './apiClient';
 
 // ─── Trails ──────────────────────────────────────────────────
+
+/** Lightweight list: core fields only, no hazards/reviews. */
+export async function fetchTrailsList(): Promise<TrailListItem[]> {
+    return apiFetch<TrailListItem[]>('/api/trails/list');
+}
+
+/** Full trail detail with hazards and reviews (for detail drawer). */
+export async function fetchTrailById(trailId: string): Promise<Trail> {
+    return apiFetch<Trail>(`/api/trails/${encodeURIComponent(trailId)}`);
+}
+
+/** Legacy: fetch all trails with hazards/reviews. */
 export async function fetchTrails(): Promise<Trail[]> {
     return apiFetch<Trail[]>('/api/trails');
 }
 
-export async function fetchTrailsInBounds(bounds: MapBounds): Promise<Trail[]> {
+export async function fetchTrailsInBounds(bounds: MapBounds): Promise<TrailListItem[]> {
     const params = new URLSearchParams({
         south: String(bounds.south),
         west: String(bounds.west),
         north: String(bounds.north),
         east: String(bounds.east),
     });
-    return apiFetch<Trail[]>(`/api/trails/bounds?${params}`);
+    return apiFetch<TrailListItem[]>(`/api/trails/bounds?${params}`);
 }
 
 // ─── Group Runs ──────────────────────────────────────────────

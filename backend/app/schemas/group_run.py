@@ -3,7 +3,9 @@ import re
 from pydantic import BaseModel, Field, field_validator
 from typing import Literal
 
-GROUP_RUN_TYPES = Literal["easy", "moderate", "hard", "race_pace", "social"]
+GROUP_RUN_TYPES = Literal[
+    "steady_pace", "performance", "recovery", "long_run", "social"
+]
 ALLOWED_COLORS = Literal[
     "text-primary",
     "text-green-500",
@@ -11,6 +13,7 @@ ALLOWED_COLORS = Literal[
     "text-orange-500",
     "text-red-500",
     "text-purple-500",
+    "text-[#FF4B4B]",
 ]
 
 # ISO 8601 datetime pattern (e.g., "2026-03-15T07:00")
@@ -29,7 +32,7 @@ class GroupRunOut(BaseModel):
 
 
 class GroupRunCreate(BaseModel):
-    trail_id: str = Field(..., min_length=1, max_length=100)
+    trail_id: str = Field(default="", max_length=200)
     name: str = Field(..., min_length=2, max_length=100)
     time: str = Field(..., description="ISO 8601 datetime string, e.g. '2026-03-15T07:00'")
     type: GROUP_RUN_TYPES

@@ -17,6 +17,26 @@ class ReviewOut(BaseModel):
     text: str
 
 
+class TrailListOut(BaseModel):
+    """Lightweight trail schema for list/card views — no hazards/reviews."""
+    id: str
+    name: str
+    difficulty: float | None = None
+    calculatedDifficulty: str | None = None
+    rating: float | None = None
+    numVotes: int | None = None
+    distance: float | None = None
+    elevation: float | None = None
+    highestPoint: float | None = None
+    trailheadLat: float | None = None
+    trailheadLng: float | None = None
+    surface: str | None = None
+    routeType: str | None = None
+    waterSource: str | None = None
+    imageUrl: str | None = None
+    difficultyScore010: float | None = None
+
+
 class TrailOut(BaseModel):
     id: str
     name: str

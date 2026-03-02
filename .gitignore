@@ -35,3 +35,6 @@ __pycache__/
 # Virtual environments
 .venv/
 venv/
+trail planning ai agent/.env
+backend/agent_memory.db
+*.db

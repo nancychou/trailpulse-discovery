@@ -13,6 +13,27 @@ export interface Hazard {
   date: string;
 }
 
+/** Lightweight trail for list/card views — no hazards/reviews. */
+export interface TrailListItem {
+  id: string;
+  name: string;
+  difficulty: number | null;
+  calculatedDifficulty: string | null;
+  rating: number | null;
+  numVotes: number | null;
+  distance: number | null;
+  elevation: number | null;
+  highestPoint: number | null;
+  trailheadLat: number | null;
+  trailheadLng: number | null;
+  surface: string | null;
+  routeType: string | null;
+  waterSource: string | null;
+  imageUrl: string | null;
+  difficultyScore010: number | null;
+}
+
+/** Full trail with all fields + hazards/reviews (for detail drawer). */
 export interface Trail {
   id: string;
   name: string;

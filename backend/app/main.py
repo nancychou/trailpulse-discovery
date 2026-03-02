@@ -10,8 +10,12 @@ from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
 from app.logging import setup_logging, get_logger
-from app.routers import trails, group_runs, hazards, auth, profiles, upload, weather
+from app.routers import trails, group_runs, hazards, auth, profiles, upload, weather, chat
 from app.services.realtime import manager
+
+# Ensure ANTHROPIC_API_KEY is available as an env var for the anthropic SDK
+if settings.ANTHROPIC_API_KEY:
+    os.environ.setdefault("ANTHROPIC_API_KEY", settings.ANTHROPIC_API_KEY)
 
 # ─── Logging ───────────────────────────────────────────────────
 # LOG_FORMAT=json in production (Fly.io), "text" locally
@@ -92,6 +96,7 @@ app.include_router(auth.router)
 app.include_router(profiles.router)
 app.include_router(upload.router)
 app.include_router(weather.router)
+app.include_router(chat.router)
 
 
 # ─── Health Check ──────────────────────────────────────────────

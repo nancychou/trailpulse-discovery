@@ -1,13 +1,13 @@
 
 import React, { useEffect, useRef, useCallback } from 'react';
 import L from 'leaflet';
-import { Trail, MapBounds } from '../types';
+import { TrailListItem, MapBounds } from '../types';
 
 interface TrailMapViewProps {
-    trails: Trail[];
+    trails: TrailListItem[];
     loading: boolean;
     onBoundsChange: (bounds: MapBounds) => void;
-    onTrailClick: (trail: Trail) => void;
+    onTrailClick: (trailId: string) => void;
     activeTrailId: string | null;
 }
 
@@ -172,13 +172,12 @@ const TrailMapView: React.FC<TrailMapViewProps> = ({
     // Register global click handler for popup buttons
     useEffect(() => {
         (window as any).__trailMapClick__ = (trailId: string) => {
-            const trail = trails.find(t => t.id === trailId);
-            if (trail) onTrailClick(trail);
+            onTrailClick(trailId);
         };
         return () => {
             delete (window as any).__trailMapClick__;
         };
-    }, [trails, onTrailClick]);
+    }, [onTrailClick]);
 
     return (
         <div className="relative w-full h-full">

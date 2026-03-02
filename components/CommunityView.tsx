@@ -1,14 +1,17 @@
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Trail } from '../types';
+import { TrailListItem } from '../types';
 import { useGroupRuns } from '../lib/hooks';
+import { useAuth } from '../lib/AuthContext';
 import { createGroupRun, createHazardReport } from '../lib/api';
 
 interface CommunityViewProps {
-  trails: Trail[];
+  trails: TrailListItem[];
+  onAuthClick?: () => void;
 }
 
-const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
+const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) => {
+  const { user } = useAuth();
   const getInitialDateTime = () => {
     const now = new Date();
     const nextHour = (now.getHours() + 1) % 24;
@@ -17,7 +20,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
   };
 
   const initial = getInitialDateTime();
-  const [routeId, setRouteId] = useState(trails[0]?.id ?? '');
+  const [routeName, setRouteName] = useState('');
   const [selectedDate, setSelectedDate] = useState(initial.date);
   const [time, setTime] = useState(initial.time);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,6 +36,9 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
   const [hazardDetails, setHazardDetails] = useState('');
   const [hazardType, setHazardType] = useState('Wildlife');
 
+  // Browse All Group Runs modal
+  const [isBrowseAllOpen, setIsBrowseAllOpen] = useState(false);
+
   // Group Run form fields
   const [groupName, setGroupName] = useState('');
   const [runType, setRunType] = useState('Steady Pace');
@@ -40,37 +46,43 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
   const calendarRef = useRef<HTMLDivElement>(null);
 
   // Fetch group runs from Supabase
-  const { groupRuns, loading: groupRunsLoading } = useGroupRuns();
+  const { groupRuns, loading: groupRunsLoading, refetch: refetchGroupRuns } = useGroupRuns();
 
-  const selectedTrail = useMemo(() =>
-    trails.find(t => t.id === routeId) || trails[0],
-    [routeId, trails]);
-
-  // Keep routeId in sync if trails change
-  useEffect(() => {
-    if (trails.length > 0 && !trails.find(t => t.id === routeId)) {
-      setRouteId(trails[0].id);
-    }
-  }, [trails, routeId]);
+  // Map UI run-type labels to backend enum values
+  const RUN_TYPE_MAP: Record<string, string> = {
+    'Steady Pace': 'steady_pace',
+    'Performance': 'performance',
+    'Recovery': 'recovery',
+    'Long Run': 'long_run',
+    'Social': 'social',
+  };
 
   const handlePost = async () => {
-    if (!selectedTrail) return;
     setIsSubmitting(true);
     try {
+      // Build ISO 8601 time string: YYYY-MM-DDTHH:MM
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const day = String(selectedDate.getDate()).padStart(2, '0');
+      const isoTime = `${year}-${month}-${day}T${time}`;
+
       await createGroupRun({
-        trail_id: selectedTrail.id,
-        name: groupName || `Group Run on ${selectedTrail.name}`,
-        time: `${time} - ${formatDate(selectedDate)}`,
-        type: runType,
+        trail_id: routeName || '',
+        name: groupName || `Group Run on ${routeName || 'Trail'}`,
+        time: isoTime,
+        type: RUN_TYPE_MAP[runType] || 'social',
         color: runType === 'Performance' ? 'text-[#FF4B4B]' : 'text-primary',
       });
-      setSuccessMessage('Group run posted to Supabase!');
+      // Refresh sidebar list immediately
+      await refetchGroupRuns();
+      setSuccessMessage('Group run posted successfully!');
       setShowSuccess(true);
       setGroupName('');
+      setRouteName('');
       setTimeout(() => setShowSuccess(false), 5000);
     } catch (err: any) {
       console.error('Failed to create group run:', err.message);
-      setSuccessMessage('Saved locally (Supabase unavailable)');
+      setSuccessMessage(`Error: ${err.message || 'Could not save group run'}`);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 5000);
     } finally {
@@ -136,7 +148,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const hasHazards = selectedTrail?.hazards && selectedTrail.hazards.length > 0;
+  const hasHazards = false; // Hazards loaded on-demand in detail drawer
 
   return (
     <div className="w-full bg-[#F8FAFB] p-10">
@@ -218,28 +230,62 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
           </div>
         )}
 
-        {/* AI Smart Suggestion */}
-        <div className="bg-[#E6F4EA] border-l-[6px] border-[#00ED3F] rounded-[2rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-sm gap-6 transition-all duration-300">
-          <div className="flex gap-6 items-start max-w-2xl">
-            <div className="w-12 h-12 bg-[#00ED3F] rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-[#00ED3F]/20">
-              <span className="material-icons text-white">auto_awesome</span>
+        {/* AI Smart Suggestion — driven by first upcoming group run from Supabase */}
+        {groupRuns.length > 0 && (() => {
+          const suggested = groupRuns[0];
+          // Reverse-map backend type to display label
+          const TYPE_DISPLAY: Record<string, string> = {
+            steady_pace: 'Steady Pace',
+            performance: 'Performance',
+            recovery: 'Recovery',
+            long_run: 'Long Run',
+            social: 'Social',
+          };
+          const typeLabel = TYPE_DISPLAY[suggested.type] || suggested.type;
+          const timeDisplay = suggested.time || 'TBD';
+          const trailName = suggested.trailId || 'a local trail';
+
+          const handleJoin = () => {
+            if (!user) {
+              onAuthClick?.();
+              return;
+            }
+            setSuccessMessage(`Joined "${suggested.name}"!`);
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 5000);
+          };
+
+          return (
+            <div className="bg-[#E6F4EA] border-l-[6px] border-[#00ED3F] rounded-[2rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-sm gap-6 transition-all duration-300">
+              <div className="flex gap-6 items-start max-w-2xl">
+                <div className="w-12 h-12 bg-[#00ED3F] rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-[#00ED3F]/20">
+                  <span className="material-icons text-white">auto_awesome</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-navy mb-2">AI Smart Suggestion</h3>
+                  <p className="text-navy/70 font-semibold leading-relaxed">
+                    Heads up! <span className="font-black text-navy">{suggested.name}</span> is a
+                    <span className="font-black text-navy"> "{typeLabel}"</span> group run on
+                    <span className="font-black text-navy"> {trailName}</span> at
+                    <span className="font-black text-navy"> {timeDisplay}</span>. Why not join as a
+                    <span className="text-[#00913F] font-black underline decoration-2 underline-offset-4"> 'Sweep'</span> runner?
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4 w-full md:w-auto">
+                <button
+                  onClick={handleJoin}
+                  className="flex-1 md:flex-none px-8 py-4 bg-[#00ED3F] text-navy font-black text-sm rounded-2xl shadow-lg shadow-[#00ED3F]/20 hover:brightness-105 transition-all active:scale-95 whitespace-nowrap"
+                >
+                  {user ? `Join ${suggested.name}` : 'Sign In to Join'}
+                </button>
+                <button className="flex-1 md:flex-none px-8 py-4 bg-white text-navy font-black text-sm rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 whitespace-nowrap">
+                  Dismiss
+                </button>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-black text-navy mb-2">AI Smart Suggestion</h3>
-              <p className="text-navy/70 font-semibold leading-relaxed">
-                Heads up! Sarah is leading a "Steady" group on <span className="font-black text-navy">{selectedTrail?.name}</span> at 8:15 AM tomorrow. Why not join as a <span className="text-[#00913F] font-black underline decoration-2 underline-offset-4">'Sweep'</span> runner instead and group together?
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4 w-full md:w-auto">
-            <button className="flex-1 md:flex-none px-8 py-4 bg-[#00ED3F] text-navy font-black text-sm rounded-2xl shadow-lg shadow-[#00ED3F]/20 hover:brightness-105 transition-all active:scale-95 whitespace-nowrap">
-              Join Sarah's Group
-            </button>
-            <button className="flex-1 md:flex-none px-8 py-4 bg-white text-navy font-black text-sm rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 whitespace-nowrap">
-              Dismiss
-            </button>
-          </div>
-        </div>
+          );
+        })()}
 
         <div className="grid grid-cols-12 gap-10">
           {/* Main Form Area */}
@@ -280,38 +326,18 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
                   </div>
                 </div>
 
-                {/* Inputs Row 1 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Select Route</label>
-                    <div className="relative">
-                      <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">search</span>
-                      <select
-                        value={routeId}
-                        onChange={(e) => setRouteId(e.target.value)}
-                        className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-navy focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
-                      >
-                        {trails.map(t => (
-                          <option key={t.id} value={t.id}>{t.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <p className="mt-2 text-[10px] font-bold text-slate-300 italic">Popular: {trails.slice(0, 3).map(t => t.name).join(', ')}</p>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Distance & Elevation</label>
-                      <div className="flex gap-3">
-                        <div className="flex-1 bg-slate-50 rounded-2xl py-4 px-6 flex items-center gap-3 border border-transparent hover:border-slate-200 transition-colors">
-                          <span className="material-icons text-slate-300 text-sm">straighten</span>
-                          <span className="text-sm font-black text-navy whitespace-nowrap">{selectedTrail?.distance} mi</span>
-                        </div>
-                        <div className="flex-1 bg-slate-50 rounded-2xl py-4 px-6 flex items-center gap-3 border border-transparent hover:border-slate-200 transition-colors">
-                          <span className="material-icons text-slate-300 text-sm">terrain</span>
-                          <span className="text-sm font-black text-navy whitespace-nowrap">{(selectedTrail?.elevation ?? 0).toLocaleString()} ft</span>
-                        </div>
-                      </div>
-                    </div>
+                {/* Route Name Input */}
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Route / Trail Name</label>
+                  <div className="relative">
+                    <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">place</span>
+                    <input
+                      type="text"
+                      value={routeName}
+                      onChange={(e) => setRouteName(e.target.value)}
+                      placeholder="e.g., Rattlesnake Ledge, Tiger Mountain Trail"
+                      className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-navy focus:ring-2 focus:ring-primary/20"
+                    />
                   </div>
                 </div>
 
@@ -378,34 +404,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
                   </div>
                 </div>
 
-                {/* Map Visualization */}
-                <div>
-                  <div className="flex justify-between items-center mb-5">
-                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Route Visualization</h3>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#00ED3F]"></span>
-                      <span className="text-[10px] font-black text-primary uppercase tracking-widest">Nearby hazards highlighted</span>
-                    </div>
-                  </div>
-                  <div className="rounded-[2.5rem] overflow-hidden relative aspect-[21/9] bg-slate-100 border border-slate-100">
-                    <img
-                      src={selectedTrail?.imageUrl}
-                      className="w-full h-full object-cover opacity-60 grayscale brightness-75"
-                      alt="Route Map"
-                    />
-                    <div className="absolute inset-0 bg-navy/20"></div>
 
-                    {hasHazards && (
-                      <div className="absolute top-[40%] left-[40%] flex items-center gap-2 bg-[#FF4B4B] text-white px-3 py-1.5 rounded-full shadow-lg shadow-[#FF4B4B]/30 scale-75 lg:scale-100 animate-pulse cursor-help group">
-                        <span className="material-icons text-[16px]">warning</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest">{selectedTrail.hazards![0].type}</span>
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-32 bg-navy text-white text-[8px] p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                          {selectedTrail.hazards![0].message}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
 
                 <div className="flex justify-end gap-6 pt-6">
                   <button className="px-10 py-5 bg-slate-50 text-navy font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-slate-100 transition-all active:scale-95">
@@ -429,9 +428,19 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
           <div className="col-span-12 lg:col-span-4 space-y-10">
             {/* Upcoming Group Runs — from Supabase */}
             <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-50">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="material-icons text-primary">groups</span>
-                <h3 className="text-xl font-black text-navy">Upcoming Group Runs</h3>
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <span className="material-icons text-primary">groups</span>
+                  <h3 className="text-xl font-black text-navy">Upcoming Group Runs</h3>
+                </div>
+                {groupRuns.length > 0 && (
+                  <button
+                    onClick={() => setIsBrowseAllOpen(true)}
+                    className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline underline-offset-4 transition-all"
+                  >
+                    Browse All
+                  </button>
+                )}
               </div>
               <div className="space-y-4">
                 {groupRunsLoading ? (
@@ -444,7 +453,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
                     <p className="text-xs font-bold text-slate-300">No group runs yet. Be the first to post!</p>
                   </div>
                 ) : (
-                  groupRuns.slice(0, 5).map((group, i) => (
+                  groupRuns.slice(0, 3).map((group, i) => (
                     <div key={group.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer group active:scale-95">
                       <div className="flex items-center gap-3">
                         <div className="relative">
@@ -465,6 +474,45 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
               </div>
             </div>
 
+            {/* Browse All Group Runs Modal */}
+            {isBrowseAllOpen && (
+              <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute inset-0 bg-navy/60 backdrop-blur-sm" onClick={() => setIsBrowseAllOpen(false)} />
+                <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl p-10 max-h-[80vh] flex flex-col overflow-hidden">
+                  <div className="flex justify-between items-center mb-8">
+                    <div className="flex items-center gap-3">
+                      <span className="material-icons text-primary">groups</span>
+                      <h3 className="text-2xl font-black text-navy">All Group Runs</h3>
+                    </div>
+                    <button onClick={() => setIsBrowseAllOpen(false)} className="text-slate-300 hover:text-navy transition-colors">
+                      <span className="material-icons">close</span>
+                    </button>
+                  </div>
+                  <div className="space-y-4 overflow-y-auto custom-scrollbar pr-2 flex-1">
+                    {groupRuns.map((group, i) => (
+                      <div key={group.id} className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer group">
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <img src={group.avatarUrl || `https://picsum.photos/seed/group${i}/100/100`} className="w-12 h-12 rounded-full border-2 border-white object-cover" alt="" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-black text-navy mb-1">{group.name}</h4>
+                            <span className={`text-[9px] font-black uppercase tracking-widest ${group.color}`}>{group.type}</span>
+                            {group.trailId && (
+                              <p className="text-[10px] font-bold text-slate-400 mt-1">{group.trailId}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0 ml-4">
+                          <div className="text-[11px] font-black text-navy">{group.time}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Safety Hub */}
             <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-50">
               <div className="flex justify-between items-center mb-8">
@@ -473,9 +521,17 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
                   <h3 className="text-xl font-black text-navy">Safety Hub</h3>
                 </div>
                 <span className="text-[9px] font-black text-[#FF4B4B] bg-[#FF4B4B]/10 px-2 py-0.5 rounded-full uppercase tracking-widest">
-                  {selectedTrail?.hazards?.length ?? 0} Live Alerts
+                  0 Live Alerts
                 </span>
               </div>
+
+              <button
+                onClick={() => setIsHazardModalOpen(true)}
+                className="w-full mb-6 py-4 bg-[#FF4B4B] text-white font-black text-[11px] uppercase tracking-widest rounded-2xl shadow-lg shadow-[#FF4B4B]/20 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2"
+              >
+                <span className="material-icons text-sm">report_problem</span>
+                Report Hazard
+              </button>
 
               <div className="space-y-4">
                 {[
@@ -498,28 +554,9 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails }) => {
                   </div>
                 ))}
               </div>
-
-              <button
-                onClick={() => setIsHazardModalOpen(true)}
-                className="w-full mt-6 py-4 border-2 border-dashed border-slate-100 rounded-2xl text-[11px] font-black text-navy/30 uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95"
-              >
-                Submit Hazard Report
-              </button>
             </div>
 
-            {/* Promo Block */}
-            <div className="bg-[#00ED3F] rounded-[2.5rem] p-10 text-navy relative overflow-hidden shadow-xl shadow-[#00ED3F]/30 group">
-              <div className="relative z-10">
-                <h3 className="text-2xl font-black mb-2 italic">Safety First!</h3>
-                <p className="text-xs font-bold leading-relaxed mb-8 opacity-80">
-                  Always carry the 10 essentials and share your live location with the TrailSync Hub before starting.
-                </p>
-                <button className="w-full py-4 bg-white text-navy font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition-all">
-                  Set Live Beacon
-                </button>
-              </div>
-              <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/20 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
-            </div>
+
           </div>
         </div>
       </div>

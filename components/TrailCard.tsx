@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { Trail } from '../types';
+import { TrailListItem } from '../types';
 
 interface TrailCardProps {
-  trail: Trail;
+  trail: TrailListItem;
   isActive: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
@@ -26,7 +26,8 @@ const TrailCard: React.FC<TrailCardProps> = ({ trail, isActive, onMouseEnter, on
           <img
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             alt={trail.name}
-            src={trail.imageUrl}
+            src={trail.imageUrl ?? undefined}
+            loading="lazy"
           />
           {/* Overlay gradient for depth */}
           <div className={`absolute inset-0 bg-gradient-to-r from-black/20 to-transparent transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-0'}`} />

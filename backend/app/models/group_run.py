@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String
 from app.models.trail import Base
 
 
@@ -6,7 +6,7 @@ class GroupRun(Base):
     __tablename__ = "group_runs"
 
     id = Column(String, primary_key=True)
-    trail_id = Column(String, ForeignKey("trails.id"), nullable=True)
+    trail_id = Column(String, nullable=True)
     name = Column(String, nullable=False)
     time = Column(String, nullable=True)
     type = Column(String, nullable=True)

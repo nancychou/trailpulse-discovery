@@ -5,15 +5,27 @@ import { SURFACE_OPTIONS } from '../constants';
 
 interface TrailDetailDrawerProps {
   trail: Trail | null;
+  loading?: boolean;
   onClose: () => void;
 }
 
 type ModalType = 'water' | 'surface' | 'cell' | 'hazard' | null;
 
-const TrailDetailDrawer: React.FC<TrailDetailDrawerProps> = ({ trail, onClose }) => {
+const TrailDetailDrawer: React.FC<TrailDetailDrawerProps> = ({ trail, loading, onClose }) => {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [selectedSurfaces, setSelectedSurfaces] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm" onClick={onClose}>
+        <div className="bg-white rounded-[2rem] p-12 flex flex-col items-center gap-4" onClick={e => e.stopPropagation()}>
+          <span className="material-icons text-5xl text-primary animate-spin">sync</span>
+          <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Loading trail details...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!trail) return null;
 
