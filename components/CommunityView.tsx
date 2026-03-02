@@ -39,6 +39,14 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
   // Browse All Group Runs modal
   const [isBrowseAllOpen, setIsBrowseAllOpen] = useState(false);
 
+  // AI Suggestion dismiss
+  const [isSuggestionDismissed, setIsSuggestionDismissed] = useState(false);
+
+  // Trail autocomplete
+  const [trailSuggestions, setTrailSuggestions] = useState<TrailListItem[]>([]);
+  const [showTrailDropdown, setShowTrailDropdown] = useState(false);
+  const trailInputRef = useRef<HTMLDivElement>(null);
+
   // Group Run form fields
   const [groupName, setGroupName] = useState('');
   const [runType, setRunType] = useState('Steady Pace');
@@ -231,7 +239,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
         )}
 
         {/* AI Smart Suggestion — driven by first upcoming group run from Supabase */}
-        {groupRuns.length > 0 && (() => {
+        {!isSuggestionDismissed && groupRuns.length > 0 && (() => {
           const suggested = groupRuns[0];
           // Reverse-map backend type to display label
           const TYPE_DISPLAY: Record<string, string> = {
@@ -279,7 +287,10 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                 >
                   {user ? `Join ${suggested.name}` : 'Sign In to Join'}
                 </button>
-                <button className="flex-1 md:flex-none px-8 py-4 bg-white text-navy font-black text-sm rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 whitespace-nowrap">
+                <button
+                  onClick={() => setIsSuggestionDismissed(true)}
+                  className="flex-1 md:flex-none px-8 py-4 bg-white text-navy font-black text-sm rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 whitespace-nowrap"
+                >
                   Dismiss
                 </button>
               </div>
@@ -327,17 +338,56 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                 </div>
 
                 {/* Route Name Input */}
-                <div>
+                <div ref={trailInputRef}>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Route / Trail Name</label>
                   <div className="relative">
                     <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">place</span>
                     <input
                       type="text"
                       value={routeName}
-                      onChange={(e) => setRouteName(e.target.value)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setRouteName(val);
+                        if (val.length >= 2) {
+                          const filtered = trails.filter(t =>
+                            t.name.toLowerCase().includes(val.toLowerCase())
+                          ).slice(0, 6);
+                          setTrailSuggestions(filtered);
+                          setShowTrailDropdown(filtered.length > 0);
+                        } else {
+                          setShowTrailDropdown(false);
+                        }
+                      }}
+                      onFocus={() => {
+                        if (routeName.length >= 2 && trailSuggestions.length > 0) {
+                          setShowTrailDropdown(true);
+                        }
+                      }}
                       placeholder="e.g., Rattlesnake Ledge, Tiger Mountain Trail"
                       className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-navy focus:ring-2 focus:ring-primary/20"
                     />
+                    {showTrailDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 max-h-60 overflow-y-auto">
+                        {trailSuggestions.map(trail => (
+                          <button
+                            key={trail.id}
+                            onClick={() => {
+                              setRouteName(trail.name);
+                              setShowTrailDropdown(false);
+                            }}
+                            className="w-full text-left px-5 py-3 text-sm font-bold text-navy hover:bg-primary/5 hover:text-primary transition-colors flex items-center gap-3"
+                          >
+                            <span className="material-icons text-slate-300 text-[16px]">place</span>
+                            <div>
+                              <div>{trail.name}</div>
+                              {trail.distance && (
+                                <span className="text-[10px] text-slate-400 font-semibold">{trail.distance} mi</span>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -453,23 +503,34 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                     <p className="text-xs font-bold text-slate-300">No group runs yet. Be the first to post!</p>
                   </div>
                 ) : (
-                  groupRuns.slice(0, 3).map((group, i) => (
-                    <div key={group.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer group active:scale-95">
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <img src={group.avatarUrl || `https://picsum.photos/seed/group${i}/100/100`} className="w-10 h-10 rounded-full border-2 border-white object-cover group-hover:ring-2 group-hover:ring-primary/20 transition-all" alt="" />
-                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[8px] font-black text-slate-400 border border-slate-100 shadow-sm">+8</div>
+                  groupRuns.slice(0, 3).map((group, i) => {
+                    const handleJoinRun = () => {
+                      if (!user) { onAuthClick?.(); return; }
+                      setSuccessMessage(`Joined "${group.name}"!`);
+                      setShowSuccess(true);
+                      setTimeout(() => setShowSuccess(false), 5000);
+                    };
+                    return (
+                      <div key={group.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer group active:scale-95">
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <img src={group.avatarUrl || `https://picsum.photos/seed/group${i}/100/100`} className="w-10 h-10 rounded-full border-2 border-white object-cover group-hover:ring-2 group-hover:ring-primary/20 transition-all" alt="" />
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[8px] font-black text-slate-400 border border-slate-100 shadow-sm">+8</div>
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-black text-navy">{group.name}</h4>
+                            <span className={`text-[8px] font-black uppercase tracking-widest ${group.color}`}>{group.type}</span>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="text-xs font-black text-navy">{group.name}</h4>
-                          <span className={`text-[8px] font-black uppercase tracking-widest ${group.color}`}>{group.type}</span>
-                        </div>
+                        <button
+                          onClick={handleJoinRun}
+                          className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-all whitespace-nowrap"
+                        >
+                          {user ? 'Join' : 'Sign In'}
+                        </button>
                       </div>
-                      <div className="text-right">
-                        <div className="text-[10px] font-black text-navy">{group.time}</div>
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
@@ -489,25 +550,40 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                     </button>
                   </div>
                   <div className="space-y-4 overflow-y-auto custom-scrollbar pr-2 flex-1">
-                    {groupRuns.map((group, i) => (
-                      <div key={group.id} className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer group">
-                        <div className="flex items-center gap-4">
-                          <div className="relative">
-                            <img src={group.avatarUrl || `https://picsum.photos/seed/group${i}/100/100`} className="w-12 h-12 rounded-full border-2 border-white object-cover" alt="" />
+                    {groupRuns.map((group, i) => {
+                      const handleJoinAll = () => {
+                        if (!user) { onAuthClick?.(); setIsBrowseAllOpen(false); return; }
+                        setSuccessMessage(`Joined "${group.name}"!`);
+                        setShowSuccess(true);
+                        setIsBrowseAllOpen(false);
+                        setTimeout(() => setShowSuccess(false), 5000);
+                      };
+                      return (
+                        <div key={group.id} className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer group">
+                          <div className="flex items-center gap-4">
+                            <div className="relative">
+                              <img src={group.avatarUrl || `https://picsum.photos/seed/group${i}/100/100`} className="w-12 h-12 rounded-full border-2 border-white object-cover" alt="" />
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-black text-navy mb-1">{group.name}</h4>
+                              <span className={`text-[9px] font-black uppercase tracking-widest ${group.color}`}>{group.type}</span>
+                              {group.trailId && (
+                                <p className="text-[10px] font-bold text-slate-400 mt-1">{group.trailId}</p>
+                              )}
+                            </div>
                           </div>
-                          <div>
-                            <h4 className="text-sm font-black text-navy mb-1">{group.name}</h4>
-                            <span className={`text-[9px] font-black uppercase tracking-widest ${group.color}`}>{group.type}</span>
-                            {group.trailId && (
-                              <p className="text-[10px] font-bold text-slate-400 mt-1">{group.trailId}</p>
-                            )}
+                          <div className="flex flex-col items-end gap-2 shrink-0 ml-4">
+                            <div className="text-[11px] font-black text-navy">{group.time}</div>
+                            <button
+                              onClick={handleJoinAll}
+                              className="text-[9px] font-black text-white uppercase tracking-widest bg-primary px-4 py-1.5 rounded-full hover:brightness-110 transition-all whitespace-nowrap"
+                            >
+                              {user ? 'Join' : 'Sign In to Join'}
+                            </button>
                           </div>
                         </div>
-                        <div className="text-right shrink-0 ml-4">
-                          <div className="text-[11px] font-black text-navy">{group.time}</div>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>

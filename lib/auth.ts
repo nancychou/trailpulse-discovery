@@ -28,6 +28,13 @@ export async function signIn(email: string, password: string): Promise<AuthRespo
     return data;
 }
 
+export async function forgotPassword(email: string): Promise<{ ok: boolean; message: string }> {
+    return apiFetch<{ ok: boolean; message: string }>('/api/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+    });
+}
+
 export async function signOut(): Promise<void> {
     try {
         await apiFetch('/api/auth/signout', { method: 'POST' });

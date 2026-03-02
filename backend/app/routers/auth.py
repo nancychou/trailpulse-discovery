@@ -4,8 +4,8 @@ from slowapi.util import get_remote_address
 
 from app.dependencies import get_current_user
 from app.logging import get_logger
-from app.schemas.auth import SignUpRequest, SignInRequest, TokenResponse, UserInfo
-from app.services.auth_service import supabase_sign_up, supabase_sign_in, supabase_sign_out
+from app.schemas.auth import SignUpRequest, SignInRequest, ForgotPasswordRequest, TokenResponse, UserInfo
+from app.services.auth_service import supabase_sign_up, supabase_sign_in, supabase_sign_out, supabase_reset_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 limiter = Limiter(key_func=get_remote_address)
@@ -59,3 +59,16 @@ async def signout(user: dict = Depends(get_current_user)):
 async def me(user: dict = Depends(get_current_user)):
     """Get current user info from JWT token."""
     return {"user": {"id": user["user_id"], "email": user["email"]}}
+
+
+@router.post("/forgot-password")
+@limiter.limit("3/minute")
+async def forgot_password(request: Request, req: ForgotPasswordRequest):
+    """Send a password reset email. Always returns success to prevent email enumeration."""
+    try:
+        await supabase_reset_password(req.email)
+        logger.info("Password reset requested", extra={"email": req.email})
+    except Exception as e:
+        logger.warning("Password reset failed", extra={"email": req.email, "reason": str(e)})
+    return {"ok": True, "message": "If an account with that email exists, a reset link has been sent."}
+

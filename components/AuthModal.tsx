@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../lib/AuthContext';
+import { forgotPassword } from '../lib/auth';
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -9,7 +10,7 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     const { signUp, signIn } = useAuth();
-    const [mode, setMode] = useState<'login' | 'signup'>('login');
+    const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,7 +30,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setSuccess('');
     };
 
-    const switchMode = (newMode: 'login' | 'signup') => {
+    const switchMode = (newMode: 'login' | 'signup' | 'forgot') => {
         setMode(newMode);
         resetForm();
     };
@@ -41,7 +42,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setLoading(true);
 
         try {
-            if (mode === 'signup') {
+            if (mode === 'forgot') {
+                const result = await forgotPassword(email);
+                setSuccess(result.message);
+            } else if (mode === 'signup') {
                 if (password !== confirmPassword) {
                     setError('Passwords do not match');
                     setLoading(false);
@@ -93,21 +97,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex border-b border-slate-100">
                     <button
                         onClick={() => switchMode('login')}
-                        className={`flex-1 py-4 text-[11px] font-black uppercase tracking-widest transition-all relative ${mode === 'login'
-                                ? 'text-primary'
-                                : 'text-slate-400 hover:text-navy'
+                        className={`flex-1 py-4 text-[11px] font-black uppercase tracking-widest transition-all relative ${(mode === 'login' || mode === 'forgot')
+                            ? 'text-primary'
+                            : 'text-slate-400 hover:text-navy'
                             }`}
                     >
                         Log In
-                        {mode === 'login' && (
+                        {(mode === 'login' || mode === 'forgot') && (
                             <div className="absolute bottom-0 left-1/4 w-1/2 h-[3px] bg-primary rounded-t-full" />
                         )}
                     </button>
                     <button
                         onClick={() => switchMode('signup')}
                         className={`flex-1 py-4 text-[11px] font-black uppercase tracking-widest transition-all relative ${mode === 'signup'
-                                ? 'text-primary'
-                                : 'text-slate-400 hover:text-navy'
+                            ? 'text-primary'
+                            : 'text-slate-400 hover:text-navy'
                             }`}
                     >
                         Sign Up
@@ -130,6 +134,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                             <span className="material-icons text-sm">check_circle</span>
                             {success}
                         </div>
+                    )}
+
+                    {mode === 'forgot' && (
+                        <p className="text-sm text-slate-500 font-semibold text-center">
+                            Enter your email and we'll send you a link to reset your password.
+                        </p>
                     )}
 
                     {mode === 'signup' && (
@@ -162,19 +172,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            required
-                            className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-semibold text-navy placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
-                        />
-                    </div>
+                    {mode !== 'forgot' && (
+                        <div>
+                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                required
+                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-semibold text-navy placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
+                            />
+                        </div>
+                    )}
 
                     {mode === 'signup' && (
                         <div>
@@ -200,12 +212,32 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         {loading ? (
                             <span className="flex items-center justify-center gap-2">
                                 <span className="material-icons text-base animate-spin">sync</span>
-                                {mode === 'signup' ? 'Creating Account...' : 'Signing In...'}
+                                {mode === 'signup' ? 'Creating Account...' : mode === 'forgot' ? 'Sending...' : 'Signing In...'}
                             </span>
                         ) : (
-                            mode === 'signup' ? 'Create Account' : 'Sign In'
+                            mode === 'signup' ? 'Create Account' : mode === 'forgot' ? 'Send Reset Link' : 'Sign In'
                         )}
                     </button>
+
+                    {mode === 'login' && (
+                        <button
+                            type="button"
+                            onClick={() => switchMode('forgot')}
+                            className="w-full text-center text-xs text-primary font-bold hover:underline"
+                        >
+                            Forgot your password?
+                        </button>
+                    )}
+
+                    {mode === 'forgot' && (
+                        <button
+                            type="button"
+                            onClick={() => switchMode('login')}
+                            className="w-full text-center text-xs text-primary font-bold hover:underline"
+                        >
+                            ← Back to Sign In
+                        </button>
+                    )}
 
                     <p className="text-center text-xs text-slate-400 font-semibold">
                         {mode === 'login' ? (
@@ -219,7 +251,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                                     Sign up
                                 </button>
                             </>
-                        ) : (
+                        ) : mode === 'signup' ? (
                             <>
                                 Already have an account?{' '}
                                 <button
@@ -230,7 +262,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                                     Log in
                                 </button>
                             </>
-                        )}
+                        ) : null}
                     </p>
                 </form>
             </div>

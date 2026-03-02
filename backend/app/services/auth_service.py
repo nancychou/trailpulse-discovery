@@ -37,7 +37,9 @@ async def supabase_sign_in(email: str, password: str) -> dict:
 
 async def supabase_sign_out(access_token: str) -> None:
     """Revoke a user's session (admin-level sign out)."""
-    # Note: supabase-py admin signout requires the user's JWT
-    # For simplicity, we just let the token expire on the client side.
-    # The client removes tokens from localStorage.
     pass
+
+
+async def supabase_reset_password(email: str) -> None:
+    """Send a password reset email via Supabase Auth."""
+    _supabase.auth.reset_password_email(email)
