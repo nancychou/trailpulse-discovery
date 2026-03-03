@@ -61,6 +61,17 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
   // Fetch group runs from Supabase
   const { groupRuns, loading: groupRunsLoading, refetch: refetchGroupRuns } = useGroupRuns();
 
+  // Format ISO time like '2026-03-03T17:00' to 'Mar 3, 5:00 PM'
+  const formatRunTime = (isoTime: string) => {
+    if (!isoTime) return 'TBD';
+    try {
+      const date = new Date(isoTime);
+      return date.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+    } catch {
+      return isoTime.replace('T', ' ');
+    }
+  };
+
   // Map UI run-type labels to backend enum values
   const RUN_TYPE_MAP: Record<string, string> = {
     'Steady Pace': 'steady_pace',
@@ -297,7 +308,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
             social: 'Social',
           };
           const typeLabel = TYPE_DISPLAY[suggested.type] || suggested.type;
-          const timeDisplay = suggested.time || 'TBD';
+          const timeDisplay = formatRunTime(suggested.time);
           const trailName = suggested.trailId || 'a local trail';
 
           const handleJoin = () => {
@@ -620,7 +631,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                             </div>
                           </div>
                           <div className="flex flex-col items-end gap-2 shrink-0 ml-4">
-                            <div className="text-[11px] font-black text-navy">{group.time}</div>
+                            <div className="text-[11px] font-black text-navy">{formatRunTime(group.time)}</div>
                             <button
                               onClick={handleJoinAll}
                               className="text-[9px] font-black text-white uppercase tracking-widest bg-primary px-4 py-1.5 rounded-full hover:brightness-110 transition-all whitespace-nowrap"

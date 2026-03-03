@@ -1,0 +1,1818 @@
+[
+  {
+    "id": "r001",
+    "name": "HURT 100",
+    "location": "Honolulu, HI",
+    "country": "USA",
+    "date": "Jan 17, 2026 • Saturday",
+    "type": "Hardrock Qualifier",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "7,500M+",
+    "rating": 4.9,
+    "difficultyRank": 5,
+    "reviewCount": "800 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Hardrock 100",
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r002",
+    "name": "Arc of Attrition by UTMB",
+    "location": "Cornwall, UK",
+    "country": "United Kingdom",
+    "date": "Jan 22, 2026 • Thursday",
+    "type": "UTMB 100M",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "4,500M+",
+    "rating": 4.7,
+    "difficultyRank": 5,
+    "reviewCount": "1.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1596524430615-b46475ddff6e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r003",
+    "name": "Hong Kong 100",
+    "location": "Hong Kong, CN",
+    "country": "China",
+    "date": "Jan 22, 2026 • Thursday",
+    "type": "World Trail Major",
+    "distance": "103KM",
+    "distanceKm": 103,
+    "elevation": "4,600M+",
+    "rating": 4.8,
+    "difficultyRank": 4,
+    "reviewCount": "5.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1524230507669-5ff9e996bb5e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors"
+    ]
+  },
+  {
+    "id": "r004",
+    "name": "Black Canyon Ultras",
+    "location": "Arizona, US",
+    "country": "USA",
+    "date": "Feb 7, 2026 • Saturday",
+    "type": "Golden Ticket",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "1,500M+",
+    "rating": 4.7,
+    "difficultyRank": 3,
+    "reviewCount": "2.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469317532191-6359be485351?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Western States (WSER)",
+      "World Trail Majors"
+    ]
+  },
+  {
+    "id": "r005",
+    "name": "Tarawera Ultra Trail by UTMB",
+    "location": "Rotorua, NZ",
+    "country": "New Zealand",
+    "date": "Feb 14, 2026 • Saturday",
+    "type": "UTMB Miler",
+    "distance": "165KM",
+    "distanceKm": 165,
+    "elevation": "4,500M+",
+    "rating": 4.8,
+    "difficultyRank": 4,
+    "reviewCount": "3.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r006",
+    "name": "Cuatro Refugios",
+    "location": "Mendoza, AR",
+    "country": "Argentina",
+    "date": "Feb 22, 2026 • Sunday",
+    "type": "Skyrunning",
+    "distance": "42KM",
+    "distanceKm": 42,
+    "elevation": "2,800M+",
+    "rating": 4.3,
+    "difficultyRank": 4,
+    "reviewCount": "450 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r007",
+    "name": "Puerto Vallarta by UTMB",
+    "location": "Jalisco, MX",
+    "country": "Mexico",
+    "date": "Mar 5, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "3,200M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "1.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464457312035-3d7d0e0c058e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r008",
+    "name": "Xtrail Kenting by UTMB",
+    "location": "Kenting, TW",
+    "country": "Taiwan",
+    "date": "Mar 6, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "3,800M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "980 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r009",
+    "name": "Transgrancanaria",
+    "location": "Gran Canaria, ES",
+    "country": "Spain",
+    "date": "Mar 6, 2026 • Friday",
+    "type": "World Trail Major",
+    "distance": "128KM",
+    "distanceKm": 128,
+    "elevation": "7,500M+",
+    "rating": 4.9,
+    "difficultyRank": 5,
+    "reviewCount": "8.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors",
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r010",
+    "name": "Andes Mountain Skyrace",
+    "location": "Santiago, CL",
+    "country": "Chile",
+    "date": "Mar 7, 2026 • Saturday",
+    "type": "Skyrunning",
+    "distance": "32KM",
+    "distanceKm": 32,
+    "elevation": "2,400M+",
+    "rating": 4.2,
+    "difficultyRank": 4,
+    "reviewCount": "380 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r011",
+    "name": "Ultra-Trail Xiamen by UTMB",
+    "location": "Xiamen, CN",
+    "country": "China",
+    "date": "Mar 14, 2026 • Saturday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "3,500M+",
+    "rating": 4.2,
+    "difficultyRank": 3,
+    "reviewCount": "1.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r012",
+    "name": "Acantilados del Norte",
+    "location": "Basque Country, ES",
+    "country": "Spain",
+    "date": "Mar 14, 2026 • Saturday",
+    "type": "Skyrunning",
+    "distance": "25KM",
+    "distanceKm": 25,
+    "elevation": "1,800M+",
+    "rating": 4.1,
+    "difficultyRank": 3,
+    "reviewCount": "520 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r013",
+    "name": "Ushuaia Fin del Mundo by UTMB",
+    "location": "Ushuaia, AR",
+    "country": "Argentina",
+    "date": "Mar 18, 2026 • Wednesday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,800M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "1.4k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r014",
+    "name": "Chianti Ultra Trail by UTMB",
+    "location": "Tuscany, IT",
+    "country": "Italy",
+    "date": "Mar 19, 2026 • Thursday",
+    "type": "UTMB 100M",
+    "distance": "170KM",
+    "distanceKm": 170,
+    "elevation": "4,200M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "2.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r015",
+    "name": "Tenerife Bluetrail by UTMB",
+    "location": "Tenerife, ES",
+    "country": "Spain",
+    "date": "Mar 19, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "104KM",
+    "distanceKm": 104,
+    "elevation": "5,200M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "3.4k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r016",
+    "name": "Desert RATS by UTMB",
+    "location": "Colorado, US",
+    "country": "USA",
+    "date": "Apr 9, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "2,400M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "1.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r017",
+    "name": "Istria 100 by UTMB",
+    "location": "Istria, HR",
+    "country": "Croatia",
+    "date": "Apr 9, 2026 • Thursday",
+    "type": "UTMB 100M",
+    "distance": "168KM",
+    "distanceKm": 168,
+    "elevation": "6,200M+",
+    "rating": 4.7,
+    "difficultyRank": 5,
+    "reviewCount": "3.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1500534314263-a834e4f49dd2?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r018",
+    "name": "Calamorro Skyrace",
+    "location": "Malaga, ES",
+    "country": "Spain",
+    "date": "Apr 11, 2026 • Saturday",
+    "type": "Skyrunning",
+    "distance": "23KM",
+    "distanceKm": 23,
+    "elevation": "1,600M+",
+    "rating": 4.0,
+    "difficultyRank": 3,
+    "reviewCount": "410 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r019",
+    "name": "Canyons Endurance Runs by UTMB",
+    "location": "California, US",
+    "country": "USA",
+    "date": "Apr 23, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "5,200M+",
+    "rating": 4.8,
+    "difficultyRank": 4,
+    "reviewCount": "4.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r020",
+    "name": "Grand Raid Ventoux by UTMB",
+    "location": "Provence, FR",
+    "country": "France",
+    "date": "Apr 24, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,100M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "1.9k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1446329813274-7c9036bd9a1f?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r021",
+    "name": "Penang Skyrace",
+    "location": "Penang, MY",
+    "country": "Malaysia",
+    "date": "Apr 26, 2026 • Sunday",
+    "type": "Skyrunning",
+    "distance": "18KM",
+    "distanceKm": 18,
+    "elevation": "1,200M+",
+    "rating": 3.9,
+    "difficultyRank": 2,
+    "reviewCount": "350 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r022",
+    "name": "Amazean Jungle Thailand by UTMB",
+    "location": "Betong, TH",
+    "country": "Thailand",
+    "date": "Apr 30, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,000M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "720 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1596524430615-b46475ddff6e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r023",
+    "name": "Oh Meu Deus by UTMB",
+    "location": "Sintra, PT",
+    "country": "Portugal",
+    "date": "May 1, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,000M+",
+    "rating": 4.5,
+    "difficultyRank": 3,
+    "reviewCount": "1.6k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1524230507669-5ff9e996bb5e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r024",
+    "name": "Mt. Fuji 100",
+    "location": "Yamanashi, JP",
+    "country": "Japan",
+    "date": "May 2, 2026 • Saturday",
+    "type": "World Trail Major",
+    "distance": "168KM",
+    "distanceKm": 168,
+    "elevation": "7,600M+",
+    "rating": 4.9,
+    "difficultyRank": 5,
+    "reviewCount": "6.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469317532191-6359be485351?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r025",
+    "name": "Skyrace des Matheysins",
+    "location": "Isere, FR",
+    "country": "France",
+    "date": "May 3, 2026 • Sunday",
+    "type": "Skyrunning",
+    "distance": "28KM",
+    "distanceKm": 28,
+    "elevation": "2,100M+",
+    "rating": 4.1,
+    "difficultyRank": 3,
+    "reviewCount": "430 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r026",
+    "name": "Ueda Skyrace",
+    "location": "Nagano, JP",
+    "country": "Japan",
+    "date": "May 4, 2026 • Monday",
+    "type": "Skyrunning",
+    "distance": "26KM",
+    "distanceKm": 26,
+    "elevation": "2,000M+",
+    "rating": 4.2,
+    "difficultyRank": 3,
+    "reviewCount": "560 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r027",
+    "name": "MIUT Madeira Island Ultra-Trail",
+    "location": "Madeira, PT",
+    "country": "Portugal",
+    "date": "May 8, 2026 • Friday",
+    "type": "World Trail Major",
+    "distance": "115KM",
+    "distanceKm": 115,
+    "elevation": "7,200M+",
+    "rating": 4.8,
+    "difficultyRank": 5,
+    "reviewCount": "4.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464457312035-3d7d0e0c058e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors"
+    ]
+  },
+  {
+    "id": "r028",
+    "name": "Ultra-Trail Australia by UTMB",
+    "location": "Blue Mountains, AU",
+    "country": "Australia",
+    "date": "May 14, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,400M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "5.6k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r029",
+    "name": "Trail Alsace by UTMB",
+    "location": "Alsace, FR",
+    "country": "France",
+    "date": "May 14, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "3,800M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "1.3k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r030",
+    "name": "Ultra-Trail Snowdonia by UTMB",
+    "location": "Snowdonia, UK",
+    "country": "United Kingdom",
+    "date": "May 15, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,200M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "2.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r031",
+    "name": "Rothrock by UTMB",
+    "location": "Pennsylvania, US",
+    "country": "USA",
+    "date": "May 15, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,500M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "950 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r032",
+    "name": "Zegama-Aizkorri",
+    "location": "Zegama, ES",
+    "country": "Spain",
+    "date": "May 17, 2026 • Sunday",
+    "type": "Golden Trail",
+    "distance": "42KM",
+    "distanceKm": 42,
+    "elevation": "2,700M+",
+    "rating": 5.0,
+    "difficultyRank": 4,
+    "reviewCount": "10k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Golden Trail World Series",
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r033",
+    "name": "Mozart 100 by UTMB",
+    "location": "Salzburg, AT",
+    "country": "Austria",
+    "date": "May 23, 2026 • Saturday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,900M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "2.4k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r034",
+    "name": "Ledro Sky Trentino",
+    "location": "Valle di Ledro, IT",
+    "country": "Italy",
+    "date": "May 24, 2026 • Sunday",
+    "type": "Golden Trail",
+    "distance": "26KM",
+    "distanceKm": 26,
+    "elevation": "2,200M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "1.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Golden Trail World Series"
+    ]
+  },
+  {
+    "id": "r035",
+    "name": "Mountain Ultra Trail by UTMB",
+    "location": "George, ZA",
+    "country": "South Africa",
+    "date": "May 29, 2026 • Friday",
+    "type": "UTMB 100M",
+    "distance": "160KM",
+    "distanceKm": 160,
+    "elevation": "5,800M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "1.7k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r036",
+    "name": "MUT Mauritius by UTMB",
+    "location": "Mauritius, MU",
+    "country": "Mauritius",
+    "date": "May 29, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,600M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "620 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r037",
+    "name": "South Downs Way 100",
+    "location": "Winchester, UK",
+    "country": "United Kingdom",
+    "date": "May 30, 2026 • Saturday",
+    "type": "World Trail Major",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "3,900M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "3.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1500534314263-a834e4f49dd2?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r038",
+    "name": "Trail 100 Andorra by UTMB",
+    "location": "Andorra la Vella, AD",
+    "country": "Andorra",
+    "date": "Jun 11, 2026 • Thursday",
+    "type": "UTMB 100M",
+    "distance": "170KM",
+    "distanceKm": 170,
+    "elevation": "10,200M+",
+    "rating": 4.8,
+    "difficultyRank": 5,
+    "reviewCount": "2.6k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r039",
+    "name": "Trail of the Kings Lake Toba by UTMB",
+    "location": "Lake Toba, ID",
+    "country": "Indonesia",
+    "date": "Jun 12, 2026 • Friday",
+    "type": "UTMB 50K",
+    "distance": "50KM",
+    "distanceKm": 50,
+    "elevation": "2,400M+",
+    "rating": 4.1,
+    "difficultyRank": 2,
+    "reviewCount": "380 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r040",
+    "name": "Broken Arrow Skyrace",
+    "location": "Squaw Valley, US",
+    "country": "USA",
+    "date": "Jun 13, 2026 • Saturday",
+    "type": "Golden Trail",
+    "distance": "52KM",
+    "distanceKm": 52,
+    "elevation": "3,100M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "3.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1446329813274-7c9036bd9a1f?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Golden Trail World Series"
+    ]
+  },
+  {
+    "id": "r041",
+    "name": "Zugspitz Ultra Trail by UTMB",
+    "location": "Garmisch, DE",
+    "country": "Germany",
+    "date": "Jun 18, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "106KM",
+    "distanceKm": 106,
+    "elevation": "5,500M+",
+    "rating": 4.7,
+    "difficultyRank": 4,
+    "reviewCount": "4.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r042",
+    "name": "Yading Skyrace",
+    "location": "Sichuan, CN",
+    "country": "China",
+    "date": "Jun 20, 2026 • Saturday",
+    "type": "Skyrunning",
+    "distance": "29KM",
+    "distanceKm": 29,
+    "elevation": "2,500M+",
+    "rating": 4.3,
+    "difficultyRank": 4,
+    "reviewCount": "680 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1596524430615-b46475ddff6e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r043",
+    "name": "Lavaredo Ultra Trail by UTMB",
+    "location": "Cortina, IT",
+    "country": "Italy",
+    "date": "Jun 24, 2026 • Wednesday",
+    "type": "UTMB 100K",
+    "distance": "120KM",
+    "distanceKm": 120,
+    "elevation": "5,800M+",
+    "rating": 4.9,
+    "difficultyRank": 4,
+    "reviewCount": "7.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1524230507669-5ff9e996bb5e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r044",
+    "name": "Marathon du Mont-Blanc",
+    "location": "Chamonix, FR",
+    "country": "France",
+    "date": "Jun 25, 2026 • Thursday",
+    "type": "Trail Marathon",
+    "distance": "42KM",
+    "distanceKm": 42,
+    "elevation": "2,730M+",
+    "rating": 4.7,
+    "difficultyRank": 3,
+    "reviewCount": "6.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469317532191-6359be485351?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r045",
+    "name": "Torrencial Chile by UTMB",
+    "location": "Valdivia, CL",
+    "country": "Chile",
+    "date": "Jun 26, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "3,200M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "780 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r046",
+    "name": "Western States 100-Mile Endurance Run",
+    "location": "California, US",
+    "country": "USA",
+    "date": "Jun 27, 2026 • Saturday",
+    "type": "WSER 100M",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "5,500M+",
+    "rating": 5.0,
+    "difficultyRank": 5,
+    "reviewCount": "12k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Western States (WSER)",
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r047",
+    "name": "Ibarra Skyrace",
+    "location": "Imbabura, EC",
+    "country": "Ecuador",
+    "date": "Jun 28, 2026 • Sunday",
+    "type": "Skyrunning",
+    "distance": "24KM",
+    "distanceKm": 24,
+    "elevation": "1,900M+",
+    "rating": 4.0,
+    "difficultyRank": 3,
+    "reviewCount": "320 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464457312035-3d7d0e0c058e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r048",
+    "name": "HOKA Val d Aran by UTMB",
+    "location": "Val d Aran, ES",
+    "country": "Spain",
+    "date": "Jul 1, 2026 • Wednesday",
+    "type": "UTMB 100M",
+    "distance": "162KM",
+    "distanceKm": 162,
+    "elevation": "10,000M+",
+    "rating": 4.8,
+    "difficultyRank": 5,
+    "reviewCount": "4.6k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r049",
+    "name": "Quebec Mega Trail",
+    "location": "Quebec, CA",
+    "country": "Canada",
+    "date": "Jul 4, 2026 • Saturday",
+    "type": "World Trail Major",
+    "distance": "165KM",
+    "distanceKm": 165,
+    "elevation": "5,000M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "2.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors",
+      "Golden Trail World Series",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r050",
+    "name": "Cordillera Blanca Skyrace",
+    "location": "Huaraz, PE",
+    "country": "Peru",
+    "date": "Jul 5, 2026 • Sunday",
+    "type": "Skyrunning",
+    "distance": "35KM",
+    "distanceKm": 35,
+    "elevation": "3,200M+",
+    "rating": 4.4,
+    "difficultyRank": 4,
+    "reviewCount": "290 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r051",
+    "name": "Restonica by UTMB",
+    "location": "Corsica, FR",
+    "country": "France",
+    "date": "Jul 9, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "5,500M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "1.9k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r052",
+    "name": "Verbier by UTMB",
+    "location": "Verbier, CH",
+    "country": "Switzerland",
+    "date": "Jul 10, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "103KM",
+    "distanceKm": 103,
+    "elevation": "6,200M+",
+    "rating": 4.7,
+    "difficultyRank": 4,
+    "reviewCount": "2.3k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r053",
+    "name": "Hardrock 100 Endurance Run",
+    "location": "Silverton, US",
+    "country": "USA",
+    "date": "Jul 10, 2026 • Friday",
+    "type": "San Juan Classic",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "10,000M+",
+    "rating": 5.0,
+    "difficultyRank": 5,
+    "reviewCount": "1.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Hardrock 100",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r054",
+    "name": "Eiger Ultra Trail by UTMB",
+    "location": "Grindelwald, CH",
+    "country": "Switzerland",
+    "date": "Jul 15, 2026 • Wednesday",
+    "type": "UTMB 100M",
+    "distance": "170KM",
+    "distanceKm": 170,
+    "elevation": "8,200M+",
+    "rating": 4.9,
+    "difficultyRank": 5,
+    "reviewCount": "5.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r055",
+    "name": "Speedgoat by UTMB",
+    "location": "Snowbird, US",
+    "country": "USA",
+    "date": "Jul 23, 2026 • Thursday",
+    "type": "UTMB 50K",
+    "distance": "52KM",
+    "distanceKm": 52,
+    "elevation": "3,400M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "2.9k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r056",
+    "name": "Bucovina Ultra Race by UTMB",
+    "location": "Bucovina, RO",
+    "country": "Romania",
+    "date": "Jul 24, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,000M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "1.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r057",
+    "name": "Quito by UTMB",
+    "location": "Quito, EC",
+    "country": "Ecuador",
+    "date": "Jul 31, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "5,100M+",
+    "rating": 4.4,
+    "difficultyRank": 4,
+    "reviewCount": "920 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1500534314263-a834e4f49dd2?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r058",
+    "name": "Pitz Alpine Glacier Trail",
+    "location": "Pitztal, AT",
+    "country": "Austria",
+    "date": "Aug 1, 2026 • Saturday",
+    "type": "Golden Trail",
+    "distance": "44KM",
+    "distanceKm": 44,
+    "elevation": "3,000M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "2.4k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Golden Trail World Series"
+    ]
+  },
+  {
+    "id": "r059",
+    "name": "Beast of Big Creek",
+    "location": "Washington, US",
+    "country": "USA",
+    "date": "Aug 1, 2026 • Saturday",
+    "type": "Skyrunning",
+    "distance": "23KM",
+    "distanceKm": 23,
+    "elevation": "1,600M+",
+    "rating": 4.2,
+    "difficultyRank": 3,
+    "reviewCount": "280 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r060",
+    "name": "Sierre-Zinal",
+    "location": "Valais, CH",
+    "country": "Switzerland",
+    "date": "Aug 8, 2026 • Saturday",
+    "type": "Golden Trail",
+    "distance": "31KM",
+    "distanceKm": 31,
+    "elevation": "2,200M+",
+    "rating": 4.9,
+    "difficultyRank": 3,
+    "reviewCount": "8.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1446329813274-7c9036bd9a1f?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Golden Trail World Series"
+    ]
+  },
+  {
+    "id": "r061",
+    "name": "Borealys by UTMB",
+    "location": "Mont-Tremblant, CA",
+    "country": "Canada",
+    "date": "Aug 14, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "3,600M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "1.4k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r062",
+    "name": "Pikes Peak Marathon",
+    "location": "Colorado, US",
+    "country": "USA",
+    "date": "Aug 16, 2026 • Sunday",
+    "type": "Classic Alpine",
+    "distance": "42KM",
+    "distanceKm": 42,
+    "elevation": "2,380M+",
+    "rating": 4.6,
+    "difficultyRank": 3,
+    "reviewCount": "4.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1596524430615-b46475ddff6e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": []
+  },
+  {
+    "id": "r063",
+    "name": "Whistler by UTMB",
+    "location": "Whistler, CA",
+    "country": "Canada",
+    "date": "Aug 21, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,200M+",
+    "rating": 4.5,
+    "difficultyRank": 3,
+    "reviewCount": "1.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1524230507669-5ff9e996bb5e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r064",
+    "name": "Matterhorn Ultraks Extreme",
+    "location": "Zermatt, CH",
+    "country": "Switzerland",
+    "date": "Aug 21, 2026 • Friday",
+    "type": "Skyrunning",
+    "distance": "49KM",
+    "distanceKm": 49,
+    "elevation": "3,600M+",
+    "rating": 4.8,
+    "difficultyRank": 5,
+    "reviewCount": "3.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469317532191-6359be485351?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r065",
+    "name": "Trofeo Kima",
+    "location": "Valmasino, IT",
+    "country": "Italy",
+    "date": "Aug 22, 2026 • Saturday",
+    "type": "Skyrunning",
+    "distance": "52KM",
+    "distanceKm": 52,
+    "elevation": "4,200M+",
+    "rating": 4.9,
+    "difficultyRank": 5,
+    "reviewCount": "2.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r066",
+    "name": "Leadville Trail 100",
+    "location": "Leadville, US",
+    "country": "USA",
+    "date": "Aug 22, 2026 • Saturday",
+    "type": "Silver Rush",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "4,800M+",
+    "rating": 4.8,
+    "difficultyRank": 5,
+    "reviewCount": "7.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Western States (WSER)",
+      "Hardrock 100"
+    ]
+  },
+  {
+    "id": "r067",
+    "name": "HOKA UTMB Mont-Blanc",
+    "location": "Chamonix, FR",
+    "country": "France",
+    "date": "Aug 24, 2026 • Monday",
+    "type": "UTMB 100M",
+    "distance": "171KM",
+    "distanceKm": 171,
+    "elevation": "10,000M+",
+    "rating": 5.0,
+    "difficultyRank": 5,
+    "reviewCount": "15.4k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464457312035-3d7d0e0c058e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r068",
+    "name": "CCC by UTMB",
+    "location": "Courmayeur, IT",
+    "country": "Italy",
+    "date": "Aug 27, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "101KM",
+    "distanceKm": 101,
+    "elevation": "6,100M+",
+    "rating": 4.9,
+    "difficultyRank": 4,
+    "reviewCount": "9.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r069",
+    "name": "OCC by UTMB",
+    "location": "Orsieres, CH",
+    "country": "Switzerland",
+    "date": "Aug 28, 2026 • Friday",
+    "type": "UTMB 50K",
+    "distance": "55KM",
+    "distanceKm": 55,
+    "elevation": "3,500M+",
+    "rating": 4.7,
+    "difficultyRank": 3,
+    "reviewCount": "7.1k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r070",
+    "name": "Maga Skymarathon",
+    "location": "Val di Mello, IT",
+    "country": "Italy",
+    "date": "Sep 5, 2026 • Saturday",
+    "type": "Skyrunning",
+    "distance": "35KM",
+    "distanceKm": 35,
+    "elevation": "2,800M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "1.6k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r071",
+    "name": "Tor des Geants",
+    "location": "Courmayeur, IT",
+    "country": "Italy",
+    "date": "Sep 6, 2026 • Sunday",
+    "type": "Mountain Epic",
+    "distance": "330KM",
+    "distanceKm": 330,
+    "elevation": "24,000M+",
+    "rating": 4.9,
+    "difficultyRank": 5,
+    "reviewCount": "3.6k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r072",
+    "name": "Wildstrubel by UTMB",
+    "location": "Crans-Montana, CH",
+    "country": "Switzerland",
+    "date": "Sep 10, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "5,800M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "2.0k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r073",
+    "name": "Snowbasin by UTMB",
+    "location": "Ogden, US",
+    "country": "USA",
+    "date": "Sep 11, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,000M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "680 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r074",
+    "name": "Grindstone by UTMB",
+    "location": "Virginia, US",
+    "country": "USA",
+    "date": "Sep 17, 2026 • Thursday",
+    "type": "UTMB 100M",
+    "distance": "164KM",
+    "distanceKm": 164,
+    "elevation": "7,200M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "1.6k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r075",
+    "name": "Paraty by UTMB",
+    "location": "Paraty, BR",
+    "country": "Brazil",
+    "date": "Sep 17, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,500M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "850 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r076",
+    "name": "Run Rabbit Run 100",
+    "location": "Steamboat Springs, US",
+    "country": "USA",
+    "date": "Sep 18, 2026 • Friday",
+    "type": "Mountain Ultra",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "6,100M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "1.3k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Western States (WSER)",
+      "Hardrock 100"
+    ]
+  },
+  {
+    "id": "r077",
+    "name": "Vietnam Mountain Marathon",
+    "location": "Sa Pa, VN",
+    "country": "Vietnam",
+    "date": "Sep 19, 2026 • Saturday",
+    "type": "World Trail Major",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,800M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "2.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1500534314263-a834e4f49dd2?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors"
+    ]
+  },
+  {
+    "id": "r078",
+    "name": "Myoko Trail",
+    "location": "Myoko, JP",
+    "country": "Japan",
+    "date": "Sep 20, 2026 • Sunday",
+    "type": "Golden Trail",
+    "distance": "30KM",
+    "distanceKm": 30,
+    "elevation": "2,100M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "1.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Golden Trail World Series"
+    ]
+  },
+  {
+    "id": "r079",
+    "name": "Nice Cote d Azur by UTMB",
+    "location": "Nice, FR",
+    "country": "France",
+    "date": "Sep 24, 2026 • Thursday",
+    "type": "UTMB 100M",
+    "distance": "168KM",
+    "distanceKm": 168,
+    "elevation": "8,500M+",
+    "rating": 4.7,
+    "difficultyRank": 5,
+    "reviewCount": "3.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r080",
+    "name": "Bear 100",
+    "location": "Logan, US",
+    "country": "USA",
+    "date": "Sep 25, 2026 • Friday",
+    "type": "Mountain Ultra",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "6,700M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "890 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1446329813274-7c9036bd9a1f?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Western States (WSER)",
+      "Hardrock 100"
+    ]
+  },
+  {
+    "id": "r081",
+    "name": "Ultra Pirineu",
+    "location": "Baga, ES",
+    "country": "Spain",
+    "date": "Sep 26, 2026 • Saturday",
+    "type": "Pyrenees Ultra",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "6,400M+",
+    "rating": 4.7,
+    "difficultyRank": 4,
+    "reviewCount": "4.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r082",
+    "name": "Jinshanling Great Wall Trail",
+    "location": "Beijing, CN",
+    "country": "China",
+    "date": "Sep 27, 2026 • Sunday",
+    "type": "Golden Trail",
+    "distance": "28KM",
+    "distanceKm": 28,
+    "elevation": "1,500M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "2.0k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1596524430615-b46475ddff6e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Golden Trail World Series"
+    ]
+  },
+  {
+    "id": "r083",
+    "name": "Gordeia Suzien",
+    "location": "Basque Country, ES",
+    "country": "Spain",
+    "date": "Sep 27, 2026 • Sunday",
+    "type": "Skyrunning",
+    "distance": "34KM",
+    "distanceKm": 34,
+    "elevation": "2,600M+",
+    "rating": 4.3,
+    "difficultyRank": 4,
+    "reviewCount": "580 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1524230507669-5ff9e996bb5e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r084",
+    "name": "Trans Jeju by UTMB",
+    "location": "Jeju, KR",
+    "country": "South Korea",
+    "date": "Oct 2, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "111KM",
+    "distanceKm": 111,
+    "elevation": "4,800M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "3.4k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469317532191-6359be485351?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r085",
+    "name": "Kodiak Ultra by UTMB",
+    "location": "Alaska, US",
+    "country": "USA",
+    "date": "Oct 8, 2026 • Thursday",
+    "type": "UTMB 100M",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "5,400M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "720 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r086",
+    "name": "Grampians Peaks Trail 100",
+    "location": "Victoria, AU",
+    "country": "Australia",
+    "date": "Oct 17, 2026 • Saturday",
+    "type": "World Trail Major",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "5,200M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "1.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors"
+    ]
+  },
+  {
+    "id": "r087",
+    "name": "Mt. Kinabalu Climbathon",
+    "location": "Sabah, MY",
+    "country": "Malaysia",
+    "date": "Oct 18, 2026 • Sunday",
+    "type": "Skyrunning",
+    "distance": "21KM",
+    "distanceKm": 21,
+    "elevation": "2,200M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "2.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1464457312035-3d7d0e0c058e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r088",
+    "name": "Diagonale des Fous",
+    "location": "Reunion, FR",
+    "country": "France",
+    "date": "Oct 22, 2026 • Thursday",
+    "type": "Grand Raid",
+    "distance": "165KM",
+    "distanceKm": 165,
+    "elevation": "9,600M+",
+    "rating": 4.9,
+    "difficultyRank": 5,
+    "reviewCount": "5.4k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r089",
+    "name": "Muju Trail Grand Finale",
+    "location": "Muju, KR",
+    "country": "South Korea",
+    "date": "Oct 24, 2026 • Saturday",
+    "type": "Golden Trail",
+    "distance": "30KM",
+    "distanceKm": 30,
+    "elevation": "1,800M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "1.2k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Golden Trail World Series"
+    ]
+  },
+  {
+    "id": "r090",
+    "name": "Sobrescobio Skyrace",
+    "location": "Asturias, ES",
+    "country": "Spain",
+    "date": "Oct 24, 2026 • Saturday",
+    "type": "Skyrunning",
+    "distance": "22KM",
+    "distanceKm": 22,
+    "elevation": "1,800M+",
+    "rating": 4.1,
+    "difficultyRank": 3,
+    "reviewCount": "460 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r091",
+    "name": "Mallorca by UTMB",
+    "location": "Mallorca, ES",
+    "country": "Spain",
+    "date": "Oct 30, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "112KM",
+    "distanceKm": 112,
+    "elevation": "5,400M+",
+    "rating": 4.6,
+    "difficultyRank": 4,
+    "reviewCount": "2.6k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r092",
+    "name": "Javelina Jundred",
+    "location": "Arizona, US",
+    "country": "USA",
+    "date": "Oct 31, 2026 • Saturday",
+    "type": "Desert Ultra",
+    "distance": "161KM",
+    "distanceKm": 161,
+    "elevation": "1,900M+",
+    "rating": 4.5,
+    "difficultyRank": 3,
+    "reviewCount": "3.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r093",
+    "name": "Shu Dao by UTMB",
+    "location": "Sichuan, CN",
+    "country": "China",
+    "date": "Nov 6, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,200M+",
+    "rating": 4.2,
+    "difficultyRank": 3,
+    "reviewCount": "650 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r094",
+    "name": "Marato dels Dements",
+    "location": "Valencia, ES",
+    "country": "Spain",
+    "date": "Nov 7, 2026 • Saturday",
+    "type": "SkyMasters",
+    "distance": "42KM",
+    "distanceKm": 42,
+    "elevation": "2,400M+",
+    "rating": 4.5,
+    "difficultyRank": 4,
+    "reviewCount": "1.8k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "Skyrunner World Series"
+    ]
+  },
+  {
+    "id": "r095",
+    "name": "Pacific Trails California by UTMB",
+    "location": "California, US",
+    "country": "USA",
+    "date": "Nov 13, 2026 • Friday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "3,400M+",
+    "rating": 4.3,
+    "difficultyRank": 3,
+    "reviewCount": "580 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r096",
+    "name": "Bariloche by UTMB",
+    "location": "Patagonia, AR",
+    "country": "Argentina",
+    "date": "Nov 18, 2026 • Wednesday",
+    "type": "UTMB 100M",
+    "distance": "170KM",
+    "distanceKm": 170,
+    "elevation": "7,000M+",
+    "rating": 4.7,
+    "difficultyRank": 5,
+    "reviewCount": "2.0k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r097",
+    "name": "Ultra Trail Kosciuszko by UTMB",
+    "location": "Kosciuszko, AU",
+    "country": "Australia",
+    "date": "Nov 26, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "3,800M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "1.0k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1500534314263-a834e4f49dd2?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  },
+  {
+    "id": "r098",
+    "name": "Ultra-Trail Cape Town",
+    "location": "Cape Town, ZA",
+    "country": "South Africa",
+    "date": "Nov 28, 2026 • Saturday",
+    "type": "World Trail Major",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,400M+",
+    "rating": 4.7,
+    "difficultyRank": 4,
+    "reviewCount": "4.5k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "World Trail Majors"
+    ]
+  },
+  {
+    "id": "r099",
+    "name": "Ultra-Trail Mt. Fuji",
+    "location": "Yamanashi, JP",
+    "country": "Japan",
+    "date": "Dec 5, 2026 • Saturday",
+    "type": "UTMF",
+    "distance": "165KM",
+    "distanceKm": 165,
+    "elevation": "7,500M+",
+    "rating": 4.8,
+    "difficultyRank": 5,
+    "reviewCount": "5.0k Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones",
+      "Western States (WSER)"
+    ]
+  },
+  {
+    "id": "r100",
+    "name": "Oman by UTMB",
+    "location": "Hajar Mountains, OM",
+    "country": "Oman",
+    "date": "Dec 10, 2026 • Thursday",
+    "type": "UTMB 100K",
+    "distance": "100KM",
+    "distanceKm": 100,
+    "elevation": "4,200M+",
+    "rating": 4.4,
+    "difficultyRank": 3,
+    "reviewCount": "450 Reviews",
+    "imageUrl": "https://images.unsplash.com/photo-1446329813274-7c9036bd9a1f?auto=format&fit=crop&q=80&w=800&h=400",
+    "qualifiers": [
+      "UTMB Index / Stones"
+    ]
+  }
+]

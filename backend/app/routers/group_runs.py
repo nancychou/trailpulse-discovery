@@ -30,12 +30,13 @@ def _map_group_run(row: GroupRun) -> GroupRunOut:
 
 @router.get("", response_model=list[GroupRunOut])
 async def get_group_runs(db: AsyncSession = Depends(get_db)):
-    """Fetch all group runs ordered by creation date descending."""
+    """Fetch upcoming group runs (future only) ordered by time ascending."""
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M")
     result = await db.execute(
-        select(GroupRun).order_by(GroupRun.created_at.desc())
+        select(GroupRun).where(GroupRun.time > now_iso).order_by(GroupRun.time.asc())
     )
     runs = result.scalars().all()
-    logger.debug("Fetched group runs", extra={"count": len(runs)})
+    logger.debug("Fetched upcoming group runs", extra={"count": len(runs)})
     return [_map_group_run(r) for r in runs]
 
 
