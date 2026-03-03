@@ -61,7 +61,7 @@ export const INITIAL_TRAILS: TrailListItem[] = [
 
 export const INITIAL_RACES: Race[] = [
   {
-    id: 'r1',
+    id: 'r067',
     name: 'UTMB® Mont-Blanc',
     location: 'Chamonix, FR',
     country: 'France',
@@ -77,7 +77,7 @@ export const INITIAL_RACES: Race[] = [
     qualifiers: ['UTMB Index / Stones']
   },
   {
-    id: 'r2',
+    id: 'r046',
     name: 'Western States Endurance Run',
     location: 'California, US',
     country: 'USA',
@@ -93,7 +93,7 @@ export const INITIAL_RACES: Race[] = [
     qualifiers: ['Western States (WSER)']
   },
   {
-    id: 'r3',
+    id: 'r005',
     name: 'Tarawera Ultramarathon',
     location: 'Rotorua, NZ',
     country: 'New Zealand',
@@ -109,7 +109,7 @@ export const INITIAL_RACES: Race[] = [
     qualifiers: ['Western States (WSER)', 'UTMB Index / Stones']
   },
   {
-    id: 'r4',
+    id: 'r004',
     name: 'Black Canyon Ultras',
     location: 'Arizona, US',
     country: 'USA',
@@ -125,7 +125,7 @@ export const INITIAL_RACES: Race[] = [
     qualifiers: ['Western States (WSER)']
   },
   {
-    id: 'r5',
+    id: 'r001',
     name: 'HURT 100',
     location: 'Honolulu, HI',
     country: 'USA',
@@ -141,7 +141,7 @@ export const INITIAL_RACES: Race[] = [
     qualifiers: ['Hardrock 100', 'UTMB Index / Stones']
   },
   {
-    id: 'r6',
+    id: 'r032',
     name: 'Zegama-Aizkorri',
     location: 'Zegama, ES',
     country: 'Spain',
@@ -157,7 +157,7 @@ export const INITIAL_RACES: Race[] = [
     qualifiers: ['UTMB Index / Stones']
   },
   {
-    id: 'r7',
+    id: 'r053',
     name: 'Hardrock 100',
     location: 'Silverton, CO',
     country: 'USA',
@@ -173,7 +173,7 @@ export const INITIAL_RACES: Race[] = [
     qualifiers: ['Western States (WSER)', 'UTMB Index / Stones']
   },
   {
-    id: 'r8',
+    id: 'r043',
     name: 'Lavaredo Ultra Trail',
     location: 'Cortina, IT',
     country: 'Italy',
