@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Race } from '../types';
 
 interface RaceDetailDrawerProps {
@@ -8,32 +8,48 @@ interface RaceDetailDrawerProps {
 }
 
 const RaceDetailDrawer: React.FC<RaceDetailDrawerProps> = ({ race, onClose }) => {
+  const [imgError, setImgError] = useState(false);
+
   if (!race) return null;
 
   // Clean elevation string for UI (removing redundant D+ which means gain)
   const displayElevation = race.elevation.replace(/\s?D\+$/, '');
 
+  // Build a search URL that will redirect to the race's official website
+  const raceSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(race.name + ' official registration')}`;
+
   return (
     <>
       {/* Backdrop */}
-      <div 
+      <div
         className="fixed inset-0 bg-navy/20 backdrop-blur-sm z-40 transition-opacity animate-in fade-in duration-300"
         onClick={onClose}
       />
-      
+
       {/* Drawer */}
       <div className="fixed top-0 right-0 h-screen w-full max-w-[500px] bg-white shadow-2xl flex flex-col overflow-y-auto custom-scrollbar z-50 animate-in slide-in-from-right duration-500">
         <div className="relative h-80 shrink-0">
-          <img src={race.imageUrl} className="w-full h-full object-cover" alt={race.name} />
+          {imgError ? (
+            <div className="w-full h-full bg-gradient-to-br from-primary/30 via-[#00ED3F]/20 to-navy/40 flex items-center justify-center">
+              <span className="material-icons text-white/60 text-6xl">landscape</span>
+            </div>
+          ) : (
+            <img
+              src={race.imageUrl}
+              className="w-full h-full object-cover"
+              alt={race.name}
+              onError={() => setImgError(true)}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80"></div>
-          
-          <button 
-            onClick={onClose} 
+
+          <button
+            onClick={onClose}
             className="absolute top-6 left-6 w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/40 transition-all border border-white/20 active:scale-90"
           >
             <span className="material-icons">close</span>
           </button>
-          
+
           <div className="absolute bottom-10 px-10 w-full">
             <span className="bg-[#00ED3F] text-navy text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block shadow-lg shadow-[#00ED3F]/20">
               {race.type}
@@ -57,24 +73,10 @@ const RaceDetailDrawer: React.FC<RaceDetailDrawerProps> = ({ race, onClose }) =>
           </div>
 
           <div>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-navy">Race Location</h3>
-              <p className="text-sm font-bold text-slate-400 flex items-center gap-1">
-                <span className="material-icons text-[16px]">location_on</span> {race.location}
-              </p>
-            </div>
-            <div className="aspect-[16/10] bg-slate-100 rounded-[2.5rem] overflow-hidden relative border border-slate-100 shadow-inner">
-              <img 
-                src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/-122.42,37.78,12,0/800x450?access_token=pk.eyJ1IjoiYm91bmRzbWVkaWEiLCJhIjoiY2t6Z2ZkZGdtMDBndzJ1bnowamVnYm5mciJ9.9RpxX2iK7Ym5E8R5R_5Q" 
-                className="w-full h-full object-cover grayscale opacity-40" 
-                alt="Map" 
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy/5">
-                 <div className="w-16 h-16 bg-white rounded-3xl shadow-xl flex items-center justify-center mb-3">
-                   <span className="material-icons text-primary text-3xl">map</span>
-                 </div>
-                 <span className="text-[11px] font-black text-navy uppercase tracking-widest opacity-40">View Interactive Course</span>
-              </div>
+            <h3 className="text-xl font-black text-navy mb-6">Race Location</h3>
+            <div className="flex items-center gap-3 p-5 bg-slate-50 rounded-3xl border border-slate-100/50">
+              <span className="material-icons text-primary text-[20px]">location_on</span>
+              <p className="text-sm font-bold text-navy">{race.location}</p>
             </div>
           </div>
 
@@ -101,9 +103,14 @@ const RaceDetailDrawer: React.FC<RaceDetailDrawerProps> = ({ race, onClose }) =>
           </div>
 
           <div className="pt-6 flex gap-4 sticky bottom-0 bg-white pb-10">
-            <button className="flex-1 py-5 bg-[#00ED3F] text-navy font-black text-sm uppercase tracking-widest rounded-[2rem] transition-all hover:brightness-110 active:scale-95 shadow-xl shadow-[#00ED3F]/20">
+            <a
+              href={raceSearchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 py-5 bg-[#00ED3F] text-navy font-black text-sm uppercase tracking-widest rounded-[2rem] transition-all hover:brightness-110 active:scale-95 shadow-xl shadow-[#00ED3F]/20 text-center"
+            >
               Register for Race
-            </button>
+            </a>
             <button className="w-16 h-16 rounded-[2rem] border-2 border-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-navy transition-all active:scale-90">
               <span className="material-icons">bookmark_border</span>
             </button>

@@ -57,9 +57,7 @@ class Trail(Base):
     surface_primary = Column(String, nullable=True)
     surface_breakdown = Column(Text, nullable=True)
     distance_mi = Column(Float, nullable=True)
-    grade_p95 = Column(Float, nullable=True)
     surface_penalty = Column(Float, nullable=True)
-    log_distance = Column(Float, nullable=True)
     wta_diff_level = Column(Float, nullable=True)
     difficulty_score_0_10 = Column(Float, nullable=True)
 

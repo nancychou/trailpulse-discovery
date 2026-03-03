@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Race } from '../types';
 
 interface RaceCardProps {
@@ -10,9 +10,10 @@ interface RaceCardProps {
 }
 
 const RaceCard: React.FC<RaceCardProps> = ({ race, onDetails, isSaved, onToggleSave }) => {
+  const [imgError, setImgError] = useState(false);
   // Clean elevation string for UI (removing redundant D+)
   const displayElevation = race.elevation.replace(/\s?D\+$/, '');
-  
+
   // Use the actual race distance from the data
   const displayDistance = race.distance;
 
@@ -20,9 +21,15 @@ const RaceCard: React.FC<RaceCardProps> = ({ race, onDetails, isSaved, onToggleS
     <div className="bg-white border border-slate-50 rounded-[2rem] p-5 shadow-sm hover:shadow-xl transition-all duration-300 group">
       <div className="flex flex-col md:flex-row gap-6 items-center">
         <div className="w-full md:w-48 h-32 rounded-3xl overflow-hidden shrink-0">
-          <img src={race.imageUrl} alt={race.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          {imgError ? (
+            <div className="w-full h-full bg-gradient-to-br from-primary/30 via-[#00ED3F]/20 to-navy/40 flex items-center justify-center">
+              <span className="material-icons text-white/60 text-4xl">landscape</span>
+            </div>
+          ) : (
+            <img src={race.imageUrl} alt={race.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onError={() => setImgError(true)} />
+          )}
         </div>
-        
+
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
             <span className="bg-primary/10 text-primary text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">{race.type}</span>
@@ -46,7 +53,7 @@ const RaceCard: React.FC<RaceCardProps> = ({ race, onDetails, isSaved, onToggleS
           <div className="text-center">
             <div className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">{displayElevation}</div>
             <div className="h-10 w-24 flex items-end gap-1 px-1">
-               {[0.3, 0.4, 0.5, 0.6, 0.7, 0.8].map((h, i) => (
+              {[0.3, 0.4, 0.5, 0.6, 0.7, 0.8].map((h, i) => (
                 <div key={i} className="flex-1 rounded-t-sm bg-slate-50" style={{ height: `${h * 100}%` }}></div>
               ))}
             </div>
@@ -63,17 +70,16 @@ const RaceCard: React.FC<RaceCardProps> = ({ race, onDetails, isSaved, onToggleS
         </div>
 
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <button 
+          <button
             onClick={() => onToggleSave(race.id)}
-            className={`p-3 rounded-2xl border transition-all ${
-              isSaved 
-              ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' 
-              : 'border-slate-100 bg-white text-slate-400 hover:bg-slate-50'
-            }`}
+            className={`p-3 rounded-2xl border transition-all ${isSaved
+                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20'
+                : 'border-slate-100 bg-white text-slate-400 hover:bg-slate-50'
+              }`}
           >
             <span className="material-icons">{isSaved ? 'bookmark' : 'bookmark_border'}</span>
           </button>
-          <button 
+          <button
             onClick={() => onDetails(race)}
             className="flex-1 md:flex-none px-8 py-4 bg-navy text-white font-black text-xs uppercase tracking-widest rounded-2xl transition-all hover:brightness-110 active:scale-95 whitespace-nowrap"
           >
