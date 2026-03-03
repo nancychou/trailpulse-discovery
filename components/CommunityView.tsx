@@ -36,6 +36,11 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
   const [hazardDetails, setHazardDetails] = useState('');
   const [hazardType, setHazardType] = useState('Wildlife');
 
+  // Hazard trail search
+  const [hazardTrailSearch, setHazardTrailSearch] = useState('');
+  const [hazardTrailResults, setHazardTrailResults] = useState<TrailListItem[]>([]);
+  const [showHazardTrailDropdown, setShowHazardTrailDropdown] = useState(false);
+
   // Browse All Group Runs modal
   const [isBrowseAllOpen, setIsBrowseAllOpen] = useState(false);
 
@@ -187,13 +192,55 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
               <div className="space-y-6">
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Trail Affected</label>
-                  <select
-                    value={hazardTrailId}
-                    onChange={(e) => setHazardTrailId(e.target.value)}
-                    className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 text-sm font-bold text-navy focus:ring-2 focus:ring-primary/20 appearance-none"
-                  >
-                    {trails.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                  </select>
+                  <div className="relative">
+                    <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none text-[18px]">place</span>
+                    <input
+                      type="text"
+                      value={hazardTrailSearch}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setHazardTrailSearch(val);
+                        if (val.length >= 1) {
+                          const filtered = trails.filter(t =>
+                            t.name.toLowerCase().includes(val.toLowerCase())
+                          ).slice(0, 5);
+                          setHazardTrailResults(filtered);
+                          setShowHazardTrailDropdown(filtered.length > 0);
+                        } else {
+                          setShowHazardTrailDropdown(false);
+                        }
+                      }}
+                      onFocus={() => {
+                        if (hazardTrailSearch.length >= 1 && hazardTrailResults.length > 0) {
+                          setShowHazardTrailDropdown(true);
+                        } else if (!hazardTrailSearch) {
+                          const initial = trails.slice(0, 5);
+                          setHazardTrailResults(initial);
+                          setShowHazardTrailDropdown(true);
+                        }
+                      }}
+                      placeholder="Search trail name..."
+                      className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-11 pr-4 text-sm font-bold text-navy focus:ring-2 focus:ring-primary/20"
+                    />
+                    {showHazardTrailDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 max-h-48 overflow-y-auto">
+                        {hazardTrailResults.map(trail => (
+                          <button
+                            key={trail.id}
+                            onClick={() => {
+                              setHazardTrailSearch(trail.name);
+                              setHazardTrailId(trail.id);
+                              setShowHazardTrailDropdown(false);
+                            }}
+                            className="w-full text-left px-5 py-3 text-sm font-bold text-navy hover:bg-primary/5 hover:text-primary transition-colors flex items-center gap-3"
+                          >
+                            <span className="material-icons text-slate-300 text-[16px]">place</span>
+                            {trail.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Hazard Type</label>
@@ -285,7 +332,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                   onClick={handleJoin}
                   className="flex-1 md:flex-none px-8 py-4 bg-[#00ED3F] text-navy font-black text-sm rounded-2xl shadow-lg shadow-[#00ED3F]/20 hover:brightness-105 transition-all active:scale-95 whitespace-nowrap"
                 >
-                  {user ? `Join ${suggested.name}` : 'Sign In to Join'}
+                  {user ? `Join ${suggested.name}` : 'Join'}
                 </button>
                 <button
                   onClick={() => setIsSuggestionDismissed(true)}
@@ -526,7 +573,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                           onClick={handleJoinRun}
                           className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-all whitespace-nowrap"
                         >
-                          {user ? 'Join' : 'Sign In'}
+                          Join
                         </button>
                       </div>
                     );
@@ -578,7 +625,7 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                               onClick={handleJoinAll}
                               className="text-[9px] font-black text-white uppercase tracking-widest bg-primary px-4 py-1.5 rounded-full hover:brightness-110 transition-all whitespace-nowrap"
                             >
-                              {user ? 'Join' : 'Sign In to Join'}
+                              Join
                             </button>
                           </div>
                         </div>
