@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Float, Integer, ARRAY
 
-from app.database import Base
+from app.models.trail import Base
 
 
 class Race(Base):
