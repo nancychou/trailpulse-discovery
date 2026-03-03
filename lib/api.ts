@@ -1,4 +1,4 @@
-import type { Trail, TrailListItem, MapBounds } from '../types';
+import type { Trail, TrailListItem, MapBounds, Race } from '../types';
 import { apiFetch } from './apiClient';
 
 // ─── Trails ──────────────────────────────────────────────────
@@ -67,4 +67,9 @@ export async function createHazardReport(payload: {
         method: 'POST',
         body: JSON.stringify(payload),
     });
+}
+
+// ─── Races ───────────────────────────────────────────────────
+export async function fetchRaces(): Promise<Race[]> {
+    return apiFetch<Race[]>('/api/races');
 }

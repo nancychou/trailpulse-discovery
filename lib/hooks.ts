@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { fetchTrailsList, fetchTrailsInBounds, fetchTrailById, fetchGroupRuns } from './api';
+import { fetchTrailsList, fetchTrailsInBounds, fetchTrailById, fetchGroupRuns, fetchRaces } from './api';
 import type { GroupRun } from './api';
-import type { Trail, TrailListItem, MapBounds } from '../types';
+import type { Trail, TrailListItem, MapBounds, Race } from '../types';
 import { INITIAL_TRAILS, INITIAL_RACES } from '../constants';
 
 const WS_URL = import.meta.env.VITE_API_URL?.replace(/^http/, 'ws') + '/ws';
@@ -231,5 +231,19 @@ export function useGroupRuns() {
  * Races are kept as local constants since they don't change.
  */
 export function useRaces() {
-    return { races: INITIAL_RACES, loading: false, error: null };
+    const [races, setRaces] = useState<Race[]>(INITIAL_RACES);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchRaces()
+            .then((data) => {
+                if (data.length > 0) setRaces(data);
+            })
+            .catch(() => {
+                // Fall back to hardcoded data
+            })
+            .finally(() => setLoading(false));
+    }, []);
+
+    return { races, loading, error: null };
 }

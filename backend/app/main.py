@@ -10,7 +10,7 @@ from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
 from app.logging import setup_logging, get_logger
-from app.routers import trails, group_runs, hazards, auth, profiles, upload, weather, chat
+from app.routers import trails, group_runs, hazards, auth, profiles, upload, weather, chat, races
 from app.services.realtime import manager
 
 # Ensure ANTHROPIC_API_KEY is available as an env var for the anthropic SDK
@@ -97,6 +97,7 @@ app.include_router(profiles.router)
 app.include_router(upload.router)
 app.include_router(weather.router)
 app.include_router(chat.router)
+app.include_router(races.router)
 
 
 # ─── Health Check ──────────────────────────────────────────────
