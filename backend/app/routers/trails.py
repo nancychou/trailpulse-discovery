@@ -1,3 +1,4 @@
+import json
 import time
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
@@ -15,8 +16,9 @@ router = APIRouter(prefix="/api/trails", tags=["trails"])
 logger = get_logger(__name__)
 
 # ─── Simple in-memory cache for the list endpoint ────────────
-_list_cache: dict[str, object] = {"data": None, "ts": 0.0}
-_LIST_CACHE_TTL = 60  # seconds
+# Cache pre-serialized JSON bytes to skip Pydantic serialization on every request
+_list_cache: dict[str, object] = {"json_bytes": None, "ts": 0.0}
+_LIST_CACHE_TTL = 300  # seconds (5 min — trail data rarely changes)
 
 
 def _map_trail_list(trail: Trail) -> TrailListOut:
@@ -95,18 +97,20 @@ def _map_trail(trail: Trail) -> TrailOut:
 
 # ─── Static routes MUST come before /{trail_id} ──────────────
 
-@router.get("/list", response_model=list[TrailListOut])
-async def get_trails_list(response: Response, db: AsyncSession = Depends(get_db)):
-    """Lightweight list: core fields only, no hazards/reviews. Cached for 60s."""
+@router.get("/list")
+async def get_trails_list(db: AsyncSession = Depends(get_db)):
+    """Lightweight list: core fields only, no hazards/reviews. Cached 5 min."""
     now = time.time()
+    cache_headers = {"Cache-Control": "public, max-age=300, stale-while-revalidate=600"}
 
-    if _list_cache["data"] is not None and (now - _list_cache["ts"]) < _LIST_CACHE_TTL:
+    if _list_cache["json_bytes"] is not None and (now - _list_cache["ts"]) < _LIST_CACHE_TTL:
         logger.debug("Serving trails list from cache")
-        response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
-        return _list_cache["data"]
+        return Response(content=_list_cache["json_bytes"], media_type="application/json", headers=cache_headers)
 
     result = await db.execute(
         select(Trail)
+        .where(Trail.distance.isnot(None))
+        .where(Trail.elevation.isnot(None))
         .options(
             load_only(
                 Trail.id, Trail.name, Trail.difficulty, Trail.calculated_difficulty,
@@ -119,14 +123,15 @@ async def get_trails_list(response: Response, db: AsyncSession = Depends(get_db)
         .order_by(Trail.difficulty_score_0_10.desc().nulls_last())
     )
     trails = result.scalars().all()
-    mapped = [_map_trail_list(t) for t in trails]
+    mapped = [_map_trail_list(t).model_dump() for t in trails]
 
-    _list_cache["data"] = mapped
+    # Pre-serialize to JSON bytes — skip re-serialization on subsequent requests
+    json_bytes = json.dumps(mapped, separators=(",", ":")).encode()
+    _list_cache["json_bytes"] = json_bytes
     _list_cache["ts"] = now
     logger.debug("Fetched trails list from DB", extra={"count": len(mapped)})
 
-    response.headers["Cache-Control"] = "public, max-age=60, stale-while-revalidate=300"
-    return mapped
+    return Response(content=json_bytes, media_type="application/json", headers=cache_headers)
 
 
 @router.get("/bounds", response_model=list[TrailOut])
@@ -147,6 +152,8 @@ async def get_trails_in_bounds(
             SELECT * FROM trails
             WHERE trailhead_lat IS NOT NULL
             AND trailhead_lng IS NOT NULL
+            AND distance IS NOT NULL
+            AND elevation IS NOT NULL
             AND trailhead_lat >= :min_lat
             AND trailhead_lat <= :max_lat
             AND trailhead_lng >= :min_lng
@@ -204,6 +211,8 @@ async def get_trails(db: AsyncSession = Depends(get_db)):
     """Fetch all trails with hazards and reviews, ordered by difficulty score."""
     result = await db.execute(
         select(Trail)
+        .where(Trail.distance.isnot(None))
+        .where(Trail.elevation.isnot(None))
         .options(selectinload(Trail.hazards), selectinload(Trail.reviews))
         .order_by(Trail.difficulty_score_0_10.desc().nulls_last())
     )

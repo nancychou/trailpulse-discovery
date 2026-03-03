@@ -62,6 +62,11 @@ const AppContent: React.FC = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
+  // Progressive loading: show 20 trails initially, load more on scroll
+  const TRAILS_PER_PAGE = 20;
+  const [visibleTrailCount, setVisibleTrailCount] = useState(TRAILS_PER_PAGE);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
   // Password recovery flow: detect tokens in URL on mount
   const [recoveryToken, setRecoveryToken] = useState<string | null>(null);
 
@@ -272,6 +277,32 @@ const AppContent: React.FC = () => {
     return results;
   }, [filters, sortBy, allTrails]);
 
+  // Reset visible count when filters/sort change
+  useEffect(() => {
+    setVisibleTrailCount(TRAILS_PER_PAGE);
+  }, [filters, sortBy]);
+
+  // Infinite scroll: observe sentinel to load more trails
+  useEffect(() => {
+    const sentinel = loadMoreRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleTrailCount(prev => prev + TRAILS_PER_PAGE);
+        }
+      },
+      { rootMargin: '400px' }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [filteredAndSortedTrails]);
+
+  const visibleTrails = useMemo(
+    () => filteredAndSortedTrails.slice(0, visibleTrailCount),
+    [filteredAndSortedTrails, visibleTrailCount]
+  );
+
   // Client-side fallback: filter allTrails by bounds when RPC is unavailable
   const mapDisplayTrails = useMemo(() => {
     // If spatial RPC returned results, use them
@@ -407,11 +438,19 @@ const AppContent: React.FC = () => {
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Refreshing...</span>
                         </div>
                       )}
-                      {filteredAndSortedTrails.map(trail => (
+                      {visibleTrails.map(trail => (
                         <div key={trail.id} style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 200px' }}>
                           <TrailCard trail={trail} isActive={activeTrailId === trail.id} onMouseEnter={() => setActiveTrailId(trail.id)} onMouseLeave={() => setActiveTrailId(null)} onClick={() => setSelectedTrailId(trail.id)} />
                         </div>
                       ))}
+                      {/* Infinite scroll sentinel */}
+                      {visibleTrailCount < filteredAndSortedTrails.length && (
+                        <div ref={loadMoreRef} className="flex items-center justify-center py-6">
+                          <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">
+                            Showing {visibleTrails.length} of {filteredAndSortedTrails.length} trails
+                          </span>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
