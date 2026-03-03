@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 def _map_profile(p: Profile) -> ProfileOut:
     return ProfileOut(
-        id=p.id,
+        id=str(p.id),
         email=p.email or "",
         displayName=p.display_name or "",
         gender=p.gender or "",
@@ -22,7 +22,7 @@ def _map_profile(p: Profile) -> ProfileOut:
         bio=p.bio or "",
         savedRaceIds=p.saved_race_ids or [],
         groupRunIds=p.group_run_ids or [],
-        createdAt=p.created_at,
+        createdAt=p.created_at.isoformat() if p.created_at else "",
     )
 
 
@@ -113,3 +113,50 @@ async def remove_saved_race(
     logger.info("Race removed", extra={"user_id": user["user_id"], "race_id": race_id})
 
     return {"savedRaceIds": profile.saved_race_ids or []}
+
+
+@router.post("/me/group-runs/{run_id}")
+async def join_group_run(
+    run_id: str,
+    user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Join a group run (add to user's joined list)."""
+    result = await db.execute(
+        select(Profile).where(Profile.id == user["user_id"])
+    )
+    profile = result.scalar_one_or_none()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    current = profile.group_run_ids or []
+    if run_id not in current:
+        profile.group_run_ids = [*current, run_id]
+        await db.commit()
+        await db.refresh(profile)
+        logger.info("Group run joined", extra={"user_id": user["user_id"], "run_id": run_id})
+
+    return {"groupRunIds": profile.group_run_ids or []}
+
+
+@router.delete("/me/group-runs/{run_id}")
+async def leave_group_run(
+    run_id: str,
+    user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Leave a group run (remove from user's joined list)."""
+    result = await db.execute(
+        select(Profile).where(Profile.id == user["user_id"])
+    )
+    profile = result.scalar_one_or_none()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    current = profile.group_run_ids or []
+    profile.group_run_ids = [r for r in current if r != run_id]
+    await db.commit()
+    await db.refresh(profile)
+    logger.info("Group run left", extra={"user_id": user["user_id"], "run_id": run_id})
+
+    return {"groupRunIds": profile.group_run_ids or []}

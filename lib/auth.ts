@@ -35,6 +35,29 @@ export async function forgotPassword(email: string): Promise<{ ok: boolean; mess
     });
 }
 
+export async function exchangeCode(code: string): Promise<{ access_token: string; user_id: string }> {
+    return apiFetch<{ access_token: string; user_id: string }>('/api/auth/exchange-code', {
+        method: 'POST',
+        body: JSON.stringify({ code }),
+    });
+}
+
+export async function updatePassword(password: string, accessToken: string): Promise<{ ok: boolean; message: string }> {
+    const res = await fetch(`${API_URL}/api/auth/update-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ password }),
+    });
+    if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail || `API error ${res.status}`);
+    }
+    return res.json();
+}
+
 export async function signOut(): Promise<void> {
     try {
         await apiFetch('/api/auth/signout', { method: 'POST' });
@@ -112,4 +135,22 @@ export async function removeSavedRace(raceId: string): Promise<string[]> {
         { method: 'DELETE' }
     );
     return data.savedRaceIds;
+}
+
+// ─── Group Run Helpers ─────────────────────────────────────
+
+export async function joinGroupRun(runId: string): Promise<string[]> {
+    const data = await apiFetch<{ groupRunIds: string[] }>(
+        `/api/profiles/me/group-runs/${runId}`,
+        { method: 'POST' }
+    );
+    return data.groupRunIds;
+}
+
+export async function leaveGroupRun(runId: string): Promise<string[]> {
+    const data = await apiFetch<{ groupRunIds: string[] }>(
+        `/api/profiles/me/group-runs/${runId}`,
+        { method: 'DELETE' }
+    );
+    return data.groupRunIds;
 }

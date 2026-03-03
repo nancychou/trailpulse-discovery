@@ -14,10 +14,37 @@ import ProfileModal from './components/ProfileModal';
 import AuthModal from './components/AuthModal';
 import ChatWidget from './components/ChatWidget';
 import { useAuth } from './lib/AuthContext';
-import { useTrails, useTrailsInBounds, useTrailDetail, useRaces } from './lib/hooks';
-import { addSavedRace, removeSavedRace } from './lib/auth';
+import { useTrails, useTrailsInBounds, useTrailDetail, useRaces, useGroupRuns } from './lib/hooks';
+import { addSavedRace, removeSavedRace, joinGroupRun, leaveGroupRun, exchangeCode } from './lib/auth';
 import { INITIAL_RACES } from './constants';
 import { FilterState, RaceFilterState, SortOption, Race, TrailListItem, MapBounds } from './types';
+
+// Parse Supabase recovery info from URL:
+// - Implicit flow: #access_token=...&type=recovery  → returns { token }
+// - PKCE flow: ?code=...  → returns { code }
+function parseRecoveryInfo(): { token?: string; code?: string } | null {
+  // Check hash fragment first (implicit flow)
+  const hash = window.location.hash.substring(1);
+  if (hash) {
+    const params = new URLSearchParams(hash);
+    if (params.get('type') === 'recovery') {
+      const token = params.get('access_token');
+      if (token) return { token };
+    }
+  }
+  // Check query params (PKCE flow)
+  const searchParams = new URLSearchParams(window.location.search);
+  const code = searchParams.get('code');
+  if (code) return { code };
+  return null;
+}
+
+// Restore active tab from localStorage
+function getInitialTab(): 'Discovery' | 'Race' | 'Community' {
+  const saved = localStorage.getItem('activeTab');
+  if (saved === 'Discovery' || saved === 'Race' || saved === 'Community') return saved;
+  return 'Discovery';
+}
 
 const AppContent: React.FC = () => {
   const { user, profile, refreshProfile } = useAuth();
@@ -25,14 +52,47 @@ const AppContent: React.FC = () => {
   // Supabase data hooks
   const { trails: allTrails, loading: trailsLoading } = useTrails();
   const { races: allRaces } = useRaces();
+  const { groupRuns } = useGroupRuns();
 
-  const [activeTab, setActiveTab] = useState<'Discovery' | 'Race' | 'Community'>('Discovery');
+  const [activeTab, setActiveTabState] = useState<'Discovery' | 'Race' | 'Community'>(getInitialTab);
   const [discoveryViewMode, setDiscoveryViewMode] = useState<'list' | 'map'>('list');
   const [raceViewMode, setRaceViewMode] = useState<'list' | 'calendar'>('list');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
+
+  // Password recovery flow: detect tokens in URL on mount
+  const [recoveryToken, setRecoveryToken] = useState<string | null>(null);
+
+  // Handle recovery redirect (both implicit and PKCE flows) on mount
+  useEffect(() => {
+    const info = parseRecoveryInfo();
+    if (!info) return;
+
+    // Clean up URL immediately
+    window.history.replaceState(null, '', window.location.pathname);
+
+    if (info.token) {
+      // Implicit flow: access_token is directly in the hash
+      setRecoveryToken(info.token);
+    } else if (info.code) {
+      // PKCE flow: exchange code for access token via backend
+      exchangeCode(info.code)
+        .then((result) => {
+          setRecoveryToken(result.access_token);
+        })
+        .catch((err) => {
+          console.error('Recovery code exchange failed:', err);
+        });
+    }
+  }, []);
+
+  // Persist active tab to localStorage
+  const setActiveTab = useCallback((tab: 'Discovery' | 'Race' | 'Community') => {
+    setActiveTabState(tab);
+    localStorage.setItem('activeTab', tab);
+  }, []);
 
   // Real-time Weather State
   const [weatherData, setWeatherData] = useState<{ text: string, source: string | null }>({
@@ -42,13 +102,16 @@ const AppContent: React.FC = () => {
 
   // Saved Items State — synced with profile
   const [savedRaceIds, setSavedRaceIds] = useState<Set<string>>(new Set());
+  const [joinedRunIds, setJoinedRunIds] = useState<Set<string>>(new Set());
 
-  // Sync saved races from profile when it loads/changes
+  // Sync saved races + joined runs from profile when it loads/changes
   useEffect(() => {
     if (profile) {
       setSavedRaceIds(new Set(profile.savedRaceIds));
+      setJoinedRunIds(new Set(profile.groupRunIds));
     } else {
       setSavedRaceIds(new Set());
+      setJoinedRunIds(new Set());
     }
   }, [profile]);
 
@@ -90,35 +153,70 @@ const AppContent: React.FC = () => {
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
 
   const toggleSaveRace = useCallback(async (raceId: string) => {
+    if (!user) return;
+
+    const wasSaved = savedRaceIds.has(raceId);
     // Optimistic update
     setSavedRaceIds(prev => {
       const next = new Set(prev);
-      if (next.has(raceId)) next.delete(raceId);
+      if (wasSaved) next.delete(raceId);
       else next.add(raceId);
       return next;
     });
 
-    // Persist to DB if logged in
-    if (user) {
-      try {
-        if (savedRaceIds.has(raceId)) {
-          await removeSavedRace(raceId);
-        } else {
-          await addSavedRace(raceId);
-        }
-        await refreshProfile();
-      } catch (err) {
-        console.warn('Failed to sync saved race:', err);
-        // Revert on error
-        setSavedRaceIds(prev => {
-          const next = new Set(prev);
-          if (next.has(raceId)) next.delete(raceId);
-          else next.add(raceId);
-          return next;
-        });
+    try {
+      let updatedIds: string[];
+      if (wasSaved) {
+        updatedIds = await removeSavedRace(raceId);
+      } else {
+        updatedIds = await addSavedRace(raceId);
       }
+      // Use API response directly — don't call refreshProfile()
+      setSavedRaceIds(new Set(updatedIds));
+    } catch (err) {
+      console.warn('Failed to sync saved race:', err);
+      // Revert on error
+      setSavedRaceIds(prev => {
+        const next = new Set(prev);
+        if (wasSaved) next.add(raceId);
+        else next.delete(raceId);
+        return next;
+      });
     }
-  }, [user, savedRaceIds, refreshProfile]);
+  }, [user, savedRaceIds]);
+
+  const toggleJoinRun = useCallback(async (runId: string) => {
+    if (!user) return;
+
+    // Optimistic update
+    const wasJoined = joinedRunIds.has(runId);
+    setJoinedRunIds(prev => {
+      const next = new Set(prev);
+      if (wasJoined) next.delete(runId);
+      else next.add(runId);
+      return next;
+    });
+
+    try {
+      let updatedIds: string[];
+      if (wasJoined) {
+        updatedIds = await leaveGroupRun(runId);
+      } else {
+        updatedIds = await joinGroupRun(runId);
+      }
+      // Use the server response directly — avoids race condition with refreshProfile
+      setJoinedRunIds(new Set(updatedIds));
+    } catch (err) {
+      console.warn('Failed to sync group run join:', err);
+      // Revert on error
+      setJoinedRunIds(prev => {
+        const next = new Set(prev);
+        if (wasJoined) next.add(runId);
+        else next.delete(runId);
+        return next;
+      });
+    }
+  }, [user, joinedRunIds]);
 
   // Fetch real-time weather via backend proxy (Gemini key stays server-side)
   useEffect(() => {
@@ -210,12 +308,19 @@ const AppContent: React.FC = () => {
 
   const sortOptions: SortOption[] = ['Rating', 'Distance', 'Elevation', 'Difficulty'];
 
-  // Close auth modal when user logs in
+  // Open auth modal automatically when recovery token is detected
   useEffect(() => {
-    if (user && isAuthOpen) {
+    if (recoveryToken) {
+      setIsAuthOpen(true);
+    }
+  }, [recoveryToken]);
+
+  // Close auth modal when user logs in (but not during recovery)
+  useEffect(() => {
+    if (user && isAuthOpen && !recoveryToken) {
       setIsAuthOpen(false);
     }
-  }, [user, isAuthOpen]);
+  }, [user, isAuthOpen, recoveryToken]);
 
   return (
     <div className="font-display bg-white h-screen flex flex-col selection:bg-primary/10 overflow-hidden">
@@ -289,17 +394,25 @@ const AppContent: React.FC = () => {
               {/* List View */}
               {discoveryViewMode === 'list' && (
                 <div className="px-10 pb-20 space-y-6 max-w-6xl mx-auto w-full flex-1">
-                  {trailsLoading ? (
+                  {trailsLoading && filteredAndSortedTrails.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 gap-4">
                       <span className="material-icons text-5xl text-primary animate-spin">sync</span>
                       <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Loading trails...</p>
                     </div>
                   ) : (
-                    filteredAndSortedTrails.map(trail => (
-                      <div key={trail.id} style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 200px' }}>
-                        <TrailCard trail={trail} isActive={activeTrailId === trail.id} onMouseEnter={() => setActiveTrailId(trail.id)} onMouseLeave={() => setActiveTrailId(null)} onClick={() => setSelectedTrailId(trail.id)} />
-                      </div>
-                    ))
+                    <>
+                      {trailsLoading && (
+                        <div className="flex items-center justify-center gap-2 py-2">
+                          <span className="material-icons text-sm text-primary animate-spin">sync</span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Refreshing...</span>
+                        </div>
+                      )}
+                      {filteredAndSortedTrails.map(trail => (
+                        <div key={trail.id} style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 200px' }}>
+                          <TrailCard trail={trail} isActive={activeTrailId === trail.id} onMouseEnter={() => setActiveTrailId(trail.id)} onMouseLeave={() => setActiveTrailId(null)} onClick={() => setSelectedTrailId(trail.id)} />
+                        </div>
+                      ))}
+                    </>
                   )}
                 </div>
               )}
@@ -356,7 +469,7 @@ const AppContent: React.FC = () => {
             </div>
           )}
 
-          {activeTab === 'Community' && <CommunityView trails={allTrails} onAuthClick={() => setIsAuthOpen(true)} />}
+          {activeTab === 'Community' && <CommunityView trails={allTrails} onAuthClick={() => setIsAuthOpen(true)} joinedRunIds={joinedRunIds} onToggleJoinRun={toggleJoinRun} />}
         </section>
 
         {selectedRace && <RaceDetailDrawer race={selectedRace} onClose={() => setSelectedRace(null)} />}
@@ -370,15 +483,27 @@ const AppContent: React.FC = () => {
       </main>
 
       <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => { setIsAuthOpen(false); setRecoveryToken(null); }} recoveryToken={recoveryToken} />
       <ChatWidget />
 
-      {activeTab !== 'Community' && (
+      {activeTab !== 'Community' && (() => {
+        // Format next group run time for footer
+        const nextRun = groupRuns[0]; // already sorted by time ascending (soonest first)
+        let nextRunText = 'No upcoming runs';
+        if (nextRun) {
+          try {
+            const d = new Date(nextRun.time);
+            nextRunText = `${nextRun.name} — ${d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}`;
+          } catch {
+            nextRunText = nextRun.name;
+          }
+        }
+        return (
         <footer className="bg-navy text-white py-4 flex justify-between items-center px-10 border-t border-slate-800 shrink-0 z-30">
           <div className="flex gap-8">
             <div className="flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-wider opacity-90">
               <span className="material-icons text-[16px] text-primary">event</span>
-              <span>Next Community Run: Tomorrow 7:00 AM</span>
+              <span>Next Community Run: {nextRunText}</span>
             </div>
             <div className="hidden md:flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-wider opacity-60">
               <span className="material-icons text-[16px]">thermostat</span>
@@ -387,7 +512,8 @@ const AppContent: React.FC = () => {
             </div>
           </div>
         </footer>
-      )}
+        );
+      })()}
     </div>
   );
 };

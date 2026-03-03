@@ -25,3 +25,11 @@ class TokenResponse(BaseModel):
 
 class ForgotPasswordRequest(BaseModel):
     email: str
+
+
+class UpdatePasswordRequest(BaseModel):
+    password: str
+
+
+class ExchangeCodeRequest(BaseModel):
+    code: str

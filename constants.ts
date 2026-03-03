@@ -105,7 +105,7 @@ export const INITIAL_RACES: Race[] = [
     rating: 4.8,
     difficultyRank: 4,
     reviewCount: '3.2k Reviews',
-    imageUrl: 'https://images.unsplash.com/photo-1524230507669-5ff9e996bb5e?auto=format&fit=crop&q=80&w=800&h=400',
+    imageUrl: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=800&h=400',
     qualifiers: ['Western States (WSER)', 'UTMB Index / Stones']
   },
   {
@@ -121,7 +121,7 @@ export const INITIAL_RACES: Race[] = [
     rating: 4.7,
     difficultyRank: 3,
     reviewCount: '2.1k Reviews',
-    imageUrl: 'https://images.unsplash.com/photo-1469317532191-6359be485351?auto=format&fit=crop&q=80&w=800&h=400',
+    imageUrl: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&q=80&w=800&h=400',
     qualifiers: ['Western States (WSER)']
   },
   {

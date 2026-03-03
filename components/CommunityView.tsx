@@ -8,9 +8,11 @@ import { createGroupRun, createHazardReport } from '../lib/api';
 interface CommunityViewProps {
   trails: TrailListItem[];
   onAuthClick?: () => void;
+  joinedRunIds?: Set<string>;
+  onToggleJoinRun?: (runId: string) => void;
 }
 
-const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) => {
+const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick, joinedRunIds = new Set(), onToggleJoinRun }) => {
   const { user } = useAuth();
   const getInitialDateTime = () => {
     const now = new Date();
@@ -311,12 +313,18 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
           const timeDisplay = formatRunTime(suggested.time);
           const trailName = suggested.trailId || 'a local trail';
 
+          const isSuggestedJoined = joinedRunIds.has(suggested.id);
           const handleJoin = () => {
             if (!user) {
               onAuthClick?.();
               return;
             }
-            setSuccessMessage(`Joined "${suggested.name}"!`);
+            onToggleJoinRun?.(suggested.id);
+            if (!isSuggestedJoined) {
+              setSuccessMessage(`Joined "${suggested.name}"!`);
+            } else {
+              setSuccessMessage(`Left "${suggested.name}"`);
+            }
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 5000);
           };
@@ -341,9 +349,9 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
               <div className="flex gap-4 w-full md:w-auto">
                 <button
                   onClick={handleJoin}
-                  className="flex-1 md:flex-none px-8 py-4 bg-[#00ED3F] text-navy font-black text-sm rounded-2xl shadow-lg shadow-[#00ED3F]/20 hover:brightness-105 transition-all active:scale-95 whitespace-nowrap"
+                  className={`flex-1 md:flex-none px-8 py-4 font-black text-sm rounded-2xl shadow-lg transition-all active:scale-95 whitespace-nowrap ${isSuggestedJoined ? 'bg-white text-[#00913F] border-2 border-[#00ED3F] shadow-[#00ED3F]/10' : 'bg-[#00ED3F] text-navy shadow-[#00ED3F]/20 hover:brightness-105'}`}
                 >
-                  {user ? `Join ${suggested.name}` : 'Join'}
+                  {!user ? 'Join' : isSuggestedJoined ? '✓ Joined' : `Join ${suggested.name}`}
                 </button>
                 <button
                   onClick={() => setIsSuggestionDismissed(true)}
@@ -562,9 +570,15 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                   </div>
                 ) : (
                   groupRuns.slice(0, 3).map((group, i) => {
+                    const isJoined = joinedRunIds.has(group.id);
                     const handleJoinRun = () => {
                       if (!user) { onAuthClick?.(); return; }
-                      setSuccessMessage(`Joined "${group.name}"!`);
+                      onToggleJoinRun?.(group.id);
+                      if (!isJoined) {
+                        setSuccessMessage(`Joined "${group.name}"!`);
+                      } else {
+                        setSuccessMessage(`Left "${group.name}"`);
+                      }
                       setShowSuccess(true);
                       setTimeout(() => setShowSuccess(false), 5000);
                     };
@@ -582,9 +596,9 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                         </div>
                         <button
                           onClick={handleJoinRun}
-                          className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-all whitespace-nowrap"
+                          className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full transition-all whitespace-nowrap ${isJoined ? 'text-white bg-primary hover:bg-primary/80' : 'text-primary bg-primary/10 hover:bg-primary/20'}`}
                         >
-                          Join
+                          {isJoined ? '✓ Joined' : 'Join'}
                         </button>
                       </div>
                     );
@@ -609,11 +623,16 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                   </div>
                   <div className="space-y-4 overflow-y-auto custom-scrollbar pr-2 flex-1">
                     {groupRuns.map((group, i) => {
+                      const isJoinedAll = joinedRunIds.has(group.id);
                       const handleJoinAll = () => {
                         if (!user) { onAuthClick?.(); setIsBrowseAllOpen(false); return; }
-                        setSuccessMessage(`Joined "${group.name}"!`);
+                        onToggleJoinRun?.(group.id);
+                        if (!isJoinedAll) {
+                          setSuccessMessage(`Joined "${group.name}"!`);
+                        } else {
+                          setSuccessMessage(`Left "${group.name}"`);
+                        }
                         setShowSuccess(true);
-                        setIsBrowseAllOpen(false);
                         setTimeout(() => setShowSuccess(false), 5000);
                       };
                       return (
@@ -634,9 +653,9 @@ const CommunityView: React.FC<CommunityViewProps> = ({ trails, onAuthClick }) =>
                             <div className="text-[11px] font-black text-navy">{formatRunTime(group.time)}</div>
                             <button
                               onClick={handleJoinAll}
-                              className="text-[9px] font-black text-white uppercase tracking-widest bg-primary px-4 py-1.5 rounded-full hover:brightness-110 transition-all whitespace-nowrap"
+                              className={`text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full transition-all whitespace-nowrap ${isJoinedAll ? 'text-primary bg-primary/10 border border-primary/30 hover:bg-primary/20' : 'text-white bg-primary hover:brightness-110'}`}
                             >
-                              Join
+                              {isJoinedAll ? '✓ Joined' : 'Join'}
                             </button>
                           </div>
                         </div>
