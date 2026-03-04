@@ -37,6 +37,11 @@ class TrailListOut(BaseModel):
     difficultyScore010: float | None = None
 
 
+class TrailNearbyOut(TrailListOut):
+    """Trail with distance from a reference point (proximity search)."""
+    distanceM: float  # distance in meters from the search point
+
+
 class TrailOut(BaseModel):
     id: str
     name: str

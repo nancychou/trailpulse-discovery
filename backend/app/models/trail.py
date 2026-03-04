@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer, Float, Text, ARRAY, DateTime, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, relationship
+from geoalchemy2 import Geography
 from datetime import datetime
 
 
@@ -28,6 +29,9 @@ class Trail(Base):
     # GPS
     trailhead_lat = Column(Float, nullable=True)
     trailhead_lng = Column(Float, nullable=True)
+
+    # PostGIS geography column (auto-synced via trigger from lat/lng)
+    geom = Column(Geography(geometry_type="POINT", srid=4326), nullable=True)
 
     # Categorizations
     surface = Column(String, nullable=True)

@@ -288,24 +288,7 @@ const TrailDetailDrawer: React.FC<TrailDetailDrawerProps> = ({ trail, loading, o
                 </div>
               </div>
 
-              {/* Trail Map Mock */}
-              <div className="space-y-6 pb-20">
-                <h2 className="text-2xl font-black text-navy">Trail Map</h2>
-                <div className="rounded-[3rem] overflow-hidden relative aspect-[21/9] bg-slate-100 border border-slate-100">
-                  <img src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/-120.65,47.59,12,0/1200x500?access_token=pk.eyJ1IjoiYm91bmRzbWVkaWEiLCJhIjoiY2t6Z2ZkZGdtMDBndzJ1bnowamVnYm5mciJ9.9RpxX2iK7Ym5E8R5R_5Q" className="w-full h-full object-cover grayscale opacity-60" alt="" />
-                  <div className="absolute inset-0 bg-navy/10 pointer-events-none"></div>
-
-                  {/* Controls */}
-                  <div className="absolute top-6 right-6 flex flex-col gap-2">
-                    <button className="w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center text-navy hover:bg-slate-50 transition-colors">
-                      <span className="material-icons">add</span>
-                    </button>
-                    <button className="w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center text-navy hover:bg-slate-50 transition-colors">
-                      <span className="material-icons">remove</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <div className="pb-20"></div>
 
             </div>
 

@@ -1,3 +1,4 @@
+import gzip
 import json
 import time
 
@@ -10,15 +11,56 @@ from sqlalchemy.orm import selectinload, load_only
 from app.database import get_db
 from app.logging import get_logger
 from app.models.trail import Trail, Hazard, Review
-from app.schemas.trail import TrailOut, TrailListOut, HazardOut, ReviewOut
+from app.schemas.trail import TrailOut, TrailListOut, TrailNearbyOut, HazardOut, ReviewOut
 
 router = APIRouter(prefix="/api/trails", tags=["trails"])
 logger = get_logger(__name__)
 
-# ─── Simple in-memory cache for the list endpoint ────────────
-# Cache pre-serialized JSON bytes to skip Pydantic serialization on every request
-_list_cache: dict[str, object] = {"json_bytes": None, "ts": 0.0}
+# ─── Simple in-memory caches for hot endpoints ──────────────
+# Cache pre-compressed gzip bytes to skip both Pydantic serialization AND
+# per-request gzip compression. Responses are served with Content-Encoding: gzip
+# directly, bypassing the GZipMiddleware entirely.
+_list_cache: dict[str, object] = {"gz_bytes": None, "ts": 0.0}
 _LIST_CACHE_TTL = 300  # seconds (5 min — trail data rarely changes)
+
+# LRU-style cache for spatial queries (bounds / nearby)
+_SPATIAL_CACHE_TTL = 120  # seconds (2 min)
+_SPATIAL_CACHE_MAX = 64   # max entries
+_spatial_cache: dict[str, tuple[float, bytes]] = {}  # key → (timestamp, gz_bytes)
+
+
+def _pre_compress(data: bytes) -> bytes:
+    """Pre-compress JSON bytes to gzip for zero-copy serving."""
+    return gzip.compress(data, compresslevel=6)
+
+
+def _gzip_response(gz_bytes: bytes, cache_control: str) -> Response:
+    """Return a pre-compressed gzip Response that bypasses GZipMiddleware."""
+    return Response(
+        content=gz_bytes,
+        media_type="application/json",
+        headers={
+            "Content-Encoding": "gzip",
+            "Cache-Control": cache_control,
+            "Vary": "Accept-Encoding",
+        },
+    )
+
+
+def _spatial_cache_get(key: str) -> bytes | None:
+    """Return cached gzip bytes if present and fresh, else None."""
+    entry = _spatial_cache.get(key)
+    if entry and (time.time() - entry[0]) < _SPATIAL_CACHE_TTL:
+        return entry[1]
+    return None
+
+
+def _spatial_cache_put(key: str, data: bytes) -> None:
+    """Store gzip bytes in the spatial cache, evicting oldest if full."""
+    if len(_spatial_cache) >= _SPATIAL_CACHE_MAX:
+        oldest_key = min(_spatial_cache, key=lambda k: _spatial_cache[k][0])
+        del _spatial_cache[oldest_key]
+    _spatial_cache[key] = (time.time(), data)
 
 
 def _map_trail_list(trail: Trail) -> TrailListOut:
@@ -99,13 +141,13 @@ def _map_trail(trail: Trail) -> TrailOut:
 
 @router.get("/list")
 async def get_trails_list(db: AsyncSession = Depends(get_db)):
-    """Lightweight list: core fields only, no hazards/reviews. Cached 5 min."""
+    """Lightweight list: core fields only, no hazards/reviews. Cached 5 min, pre-gzipped."""
     now = time.time()
-    cache_headers = {"Cache-Control": "public, max-age=300, stale-while-revalidate=600"}
+    cc = "public, max-age=300, stale-while-revalidate=600"
 
-    if _list_cache["json_bytes"] is not None and (now - _list_cache["ts"]) < _LIST_CACHE_TTL:
+    if _list_cache["gz_bytes"] is not None and (now - _list_cache["ts"]) < _LIST_CACHE_TTL:
         logger.debug("Serving trails list from cache")
-        return Response(content=_list_cache["json_bytes"], media_type="application/json", headers=cache_headers)
+        return _gzip_response(_list_cache["gz_bytes"], cc)
 
     result = await db.execute(
         select(Trail)
@@ -125,16 +167,17 @@ async def get_trails_list(db: AsyncSession = Depends(get_db)):
     trails = result.scalars().all()
     mapped = [_map_trail_list(t).model_dump() for t in trails]
 
-    # Pre-serialize to JSON bytes — skip re-serialization on subsequent requests
+    # Pre-serialize + pre-compress — zero-copy serving on cache hit
     json_bytes = json.dumps(mapped, separators=(",", ":")).encode()
-    _list_cache["json_bytes"] = json_bytes
+    gz_bytes = _pre_compress(json_bytes)
+    _list_cache["gz_bytes"] = gz_bytes
     _list_cache["ts"] = now
     logger.debug("Fetched trails list from DB", extra={"count": len(mapped)})
 
-    return Response(content=json_bytes, media_type="application/json", headers=cache_headers)
+    return _gzip_response(gz_bytes, cc)
 
 
-@router.get("/bounds", response_model=list[TrailOut])
+@router.get("/bounds")
 async def get_trails_in_bounds(
     south: float = Query(...),
     west: float = Query(...),
@@ -142,34 +185,44 @@ async def get_trails_in_bounds(
     east: float = Query(...),
     db: AsyncSession = Depends(get_db),
 ):
-    """Spatial search: fetch trails within map bounds using lat/lng filtering."""
+    """PostGIS spatial search: trails within map bounding box via GIST index. Cached 2 min."""
+    cache_key = f"bounds:{south:.4f},{west:.4f},{north:.4f},{east:.4f}"
+    cache_headers = {"Cache-Control": "public, max-age=120, stale-while-revalidate=300"}
+
+    cc = "public, max-age=120, stale-while-revalidate=300"
+    cached = _spatial_cache_get(cache_key)
+    if cached is not None:
+        logger.debug("Serving bounds from cache", extra={"key": cache_key})
+        return _gzip_response(cached, cc)
+
     logger.debug(
-        "Bounds query",
+        "PostGIS bounds query",
         extra={"south": south, "west": west, "north": north, "east": east},
     )
     result = await db.execute(
         text("""
-            SELECT * FROM trails
-            WHERE trailhead_lat IS NOT NULL
-            AND trailhead_lng IS NOT NULL
-            AND distance IS NOT NULL
-            AND elevation IS NOT NULL
-            AND trailhead_lat >= :min_lat
-            AND trailhead_lat <= :max_lat
-            AND trailhead_lng >= :min_lng
-            AND trailhead_lng <= :max_lng
+            SELECT id, name, difficulty, calculated_difficulty, rating, num_votes,
+                   distance, elevation, highest_point, trailhead_lat, trailhead_lng,
+                   surface, route_type, water_source, image_url, difficulty_score_0_10
+            FROM trails
+            WHERE geom IS NOT NULL
+              AND distance IS NOT NULL
+              AND elevation IS NOT NULL
+              AND ST_Intersects(
+                    geom,
+                    ST_MakeEnvelope(:min_lng, :min_lat, :max_lng, :max_lat, 4326)::geography
+                  )
             ORDER BY difficulty_score_0_10 DESC NULLS LAST
         """),
         {"min_lat": south, "min_lng": west, "max_lat": north, "max_lng": east},
     )
     rows = result.mappings().all()
-    logger.debug("Bounds query returned", extra={"count": len(rows)})
+    logger.debug("PostGIS bounds query returned", extra={"count": len(rows)})
 
-    return [
-        TrailOut(
+    mapped = [
+        TrailListOut(
             id=r["id"],
             name=r["name"],
-            rank=r["rank"],
             difficulty=r["difficulty"],
             calculatedDifficulty=r["calculated_difficulty"],
             rating=r["rating"],
@@ -183,27 +236,87 @@ async def get_trails_in_bounds(
             routeType=r["route_type"],
             waterSource=r["water_source"],
             imageUrl=r["image_url"],
-            parkingTags=r["parking_tags"] or [],
-            parkingStatus=r["parking_status"],
-            restrooms=r["restrooms"],
-            cellCoverage=r["cell_coverage"],
-            crowdLevel=r["crowd_level"],
-            sourceUrl=r["source_url"],
-            osmId=r["osm_id"],
-            osmName=r["osm_name"],
-            matchConfidence=r["match_confidence"],
-            maxGradeP95=r["max_grade_p95"],
-            surfacePrimary=r["surface_primary"],
-            surfaceBreakdown=r["surface_breakdown"],
-            distanceMi=r["distance_mi"],
-            surfacePenalty=r["surface_penalty"],
-            wtaDiffLevel=r["wta_diff_level"],
             difficultyScore010=r["difficulty_score_0_10"],
-            hazards=[],
-            reviews=[],
-        )
+        ).model_dump()
         for r in rows
     ]
+    gz_bytes = _pre_compress(json.dumps(mapped, separators=(",", ":")).encode())
+    _spatial_cache_put(cache_key, gz_bytes)
+    return _gzip_response(gz_bytes, cc)
+
+
+@router.get("/nearby")
+async def get_trails_nearby(
+    lat: float = Query(..., description="Latitude of center point"),
+    lng: float = Query(..., description="Longitude of center point"),
+    radius_km: float = Query(50, description="Search radius in kilometers"),
+    db: AsyncSession = Depends(get_db),
+):
+    """PostGIS proximity search: trails within radius, ordered by distance. Cached 2 min."""
+    radius_m = radius_km * 1000
+    cache_key = f"nearby:{lat:.4f},{lng:.4f},{radius_km:.1f}"
+    cc = "public, max-age=120, stale-while-revalidate=300"
+
+    cached = _spatial_cache_get(cache_key)
+    if cached is not None:
+        logger.debug("Serving nearby from cache", extra={"key": cache_key})
+        return _gzip_response(cached, cc)
+
+    logger.debug(
+        "PostGIS nearby query",
+        extra={"lat": lat, "lng": lng, "radius_km": radius_km},
+    )
+    result = await db.execute(
+        text("""
+            SELECT
+                t.id, t.name,
+                ST_Distance(t.geom, ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography) AS distance_m,
+                t.difficulty, t.calculated_difficulty, t.rating, t.num_votes,
+                t.distance, t.elevation, t.highest_point,
+                t.trailhead_lat, t.trailhead_lng,
+                t.surface, t.route_type, t.water_source, t.image_url,
+                t.difficulty_score_0_10
+            FROM trails t
+            WHERE t.geom IS NOT NULL
+              AND t.distance IS NOT NULL
+              AND t.elevation IS NOT NULL
+              AND ST_DWithin(
+                    t.geom,
+                    ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography,
+                    :radius_m
+                  )
+            ORDER BY distance_m
+        """),
+        {"lat": lat, "lng": lng, "radius_m": radius_m},
+    )
+    rows = result.mappings().all()
+    logger.debug("PostGIS nearby query returned", extra={"count": len(rows)})
+
+    mapped = [
+        TrailNearbyOut(
+            id=r["id"],
+            name=r["name"],
+            distanceM=round(r["distance_m"], 1),
+            difficulty=r["difficulty"],
+            calculatedDifficulty=r["calculated_difficulty"],
+            rating=r["rating"],
+            numVotes=r["num_votes"],
+            distance=r["distance"],
+            elevation=r["elevation"],
+            highestPoint=r["highest_point"],
+            trailheadLat=r["trailhead_lat"],
+            trailheadLng=r["trailhead_lng"],
+            surface=r["surface"],
+            routeType=r["route_type"],
+            waterSource=r["water_source"],
+            imageUrl=r["image_url"],
+            difficultyScore010=r["difficulty_score_0_10"],
+        ).model_dump()
+        for r in rows
+    ]
+    gz_bytes = _pre_compress(json.dumps(mapped, separators=(",", ":")).encode())
+    _spatial_cache_put(cache_key, gz_bytes)
+    return _gzip_response(gz_bytes, cc)
 
 
 @router.get("", response_model=list[TrailOut])

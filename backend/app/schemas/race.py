@@ -17,3 +17,15 @@ class RaceOut(BaseModel):
     reviewCount: str
     imageUrl: str
     qualifiers: list[str]
+
+
+class RaceStatsOut(BaseModel):
+    """Race statistics aggregated by country."""
+    country: str
+    raceCount: int
+    avgDistanceKm: float
+    minDistanceKm: float
+    maxDistanceKm: float
+    avgRating: float
+    avgDifficulty: float
+    qualifiers: list[str]

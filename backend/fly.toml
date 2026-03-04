@@ -13,7 +13,7 @@ primary_region = 'sjc'
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1
 
 [checks]
   [checks.health]
@@ -24,6 +24,5 @@ primary_region = 'sjc'
     path = '/health'
 
 [[vm]]
-  memory = '256mb'
-  cpus = 1
-  memory_mb = 256
+  memory = '1gb'
+  cpus = 2
